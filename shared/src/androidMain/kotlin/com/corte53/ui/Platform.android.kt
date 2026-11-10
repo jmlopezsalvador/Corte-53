@@ -42,3 +42,16 @@ actual fun KeepScreenOn(on: Boolean) {
         onDispose { view.keepScreenOn = false }
     }
 }
+
+@Composable
+actual fun OnAppStopped(onStopped: () -> Unit) {
+    val owner = androidx.compose.ui.platform.LocalLifecycleOwner.current
+    val current = androidx.compose.runtime.rememberUpdatedState(onStopped)
+    androidx.compose.runtime.DisposableEffect(owner) {
+        val observer = androidx.lifecycle.LifecycleEventObserver { _, e ->
+            if (e == androidx.lifecycle.Lifecycle.Event.ON_STOP) current.value()
+        }
+        owner.lifecycle.addObserver(observer)
+        onDispose { owner.lifecycle.removeObserver(observer) }
+    }
+}

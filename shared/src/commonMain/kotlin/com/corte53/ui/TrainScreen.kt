@@ -182,8 +182,7 @@ fun ResultScreen(session: TrainSession, onRetryFails: () -> Unit, onAgain: () ->
                 }
             }
         } else if (marked > 0) {
-            Label("Para repasar")
-            Text("¡Sin fallos! 🎩", color = Pal.Muted, fontSize = 17.6.sp, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
+            Text("¡Sin fallos! 🎩", color = Pal.Muted, fontSize = 17.6.sp, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth().padding(top = 24.dp))
         }
         if (fails.isNotEmpty()) PrimaryButton("Repasar fallos", Modifier.padding(top = 28.dp), onClick = onRetryFails)
         GhostButton("Repetir sesión", Modifier.fillMaxWidth().padding(top = 10.dp), onClick = onAgain)

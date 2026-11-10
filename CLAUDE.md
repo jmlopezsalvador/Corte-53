@@ -93,7 +93,8 @@ conexión, sin cuentas; ajustes solo en local.
 - Pantallas en `shared/.../ui/` (`MenuScreen`, `TrainScreen`+`ResultScreen`, `VoiceScreens` = Escuchar/Cortes/Restas con `VoiceController`, `InfoScreens` = Baraja/Glosario, `Cards.kt` = cartas vectoriales, `Components.kt` = controles y colores `Pal`). Navegación simple en `App.kt` (`Dest`).
 - Voz: sección «Voz» al final del menú (`VoiceSettings.kt`): automática (prefiere voz instalada, España primero) o elegir; indica si es local o necesita internet; botón «Probar voz»; `VoiceWarning` en Escuchar/Cortes/Restas si la voz es de red o no hay voz en español. `voiceId` guardado en `AppSettings`.
 - Icono Android hecho (adaptive: fondo `#9F0311` + `drawable-nodpi/ic_launcher_foreground.png`, origen `data/icon.png`). Falta el de iOS (iOS se deja para más adelante).
-- Pendiente: revisar detalles finos frente al HTML; iOS (sin compilar, aplazado). Mp3 sin usar.
+- Repaso contra el HTML hecho: flujos probados en emulador (marcar, deslizar, resultado, repasar fallos, glosario, cortes con voz, persistencia). La voz se para al pasar la app a segundo plano (`OnAppStopped`; en iOS aún no implementado).
+- Pendiente: iOS (sin compilar, aplazado: icono, `OnAppStopped`, probar `IosSpeechEngine`). Mp3 sin usar (respaldo opcional).
 - Confirmar nombre/paquete definitivos (hoy `Corte53` / `com.corte53`) y rama de iOS.
 - Falta el icono de iOS (`iosApp/.../AppIcon.appiconset`, 1024×1024 sin transparencia desde `data/icon.png`).
 - Validar en emulador Android; solo después, workflow de iOS (preguntar antes) y firma del `.ipa`.

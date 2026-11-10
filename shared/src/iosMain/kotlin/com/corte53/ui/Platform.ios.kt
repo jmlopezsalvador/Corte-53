@@ -30,3 +30,7 @@ actual fun KeepScreenOn(on: Boolean) {
         onDispose { platform.UIKit.UIApplication.sharedApplication.idleTimerDisabled = false }
     }
 }
+
+// Pendiente al retomar iOS: observar UIApplicationDidEnterBackgroundNotification.
+@Composable
+actual fun OnAppStopped(onStopped: () -> Unit) {}

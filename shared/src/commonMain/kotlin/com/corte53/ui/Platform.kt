@@ -25,3 +25,7 @@ expect fun PlatformBackHandler(enabled: Boolean, onBack: () -> Unit)
 /** Mantiene la pantalla encendida mientras [on] es true (mientras suena la voz). */
 @Composable
 expect fun KeepScreenOn(on: Boolean)
+
+/** Avisa cuando la app deja de estar a la vista (segundo plano o pantalla bloqueada), para parar la voz. */
+@Composable
+expect fun OnAppStopped(onStopped: () -> Unit)

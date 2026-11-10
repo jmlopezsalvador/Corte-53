@@ -95,7 +95,9 @@ class VoiceController(private val scope: CoroutineScope) {
 @Composable
 private fun rememberVoice(): VoiceController {
     val scope = rememberCoroutineScope()
-    return remember { VoiceController(scope) }
+    val controller = remember { VoiceController(scope) }
+    OnAppStopped { controller.stop() }   // al salir de la app se para la voz
+    return controller
 }
 
 @Composable
@@ -149,6 +151,7 @@ fun ListenScreen(
             while (true) {
                 if (i >= list.size) {
                     if (a.loop) { list = build(); i = 0 } else break
+                    if (list.isEmpty()) break
                 }
                 val s = a
                 runner.run(
