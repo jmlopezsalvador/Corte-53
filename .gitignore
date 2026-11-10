@@ -1,0 +1,11 @@
+local.properties
+build/
+.gradle/
+*.iml
+.idea/
+
+# iOS (el proyecto de Xcode se genera con XcodeGen)
+*.xcodeproj/
+xcuserdata/
+DerivedData/
+.kotlin/

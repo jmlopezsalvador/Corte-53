@@ -1,0 +1,245 @@
+<!-- Marcado de las pantallas (extraído de mnemonica.html) -->
+<!-- AJUSTES -->
+<section class="screen on" id="setup">
+  <h1>Mnemónica<small>Entrenador · Tamariz</small></h1>
+  <div class="suits">♠︎♥︎♣︎♦︎</div>
+
+  <div class="label">Orden</div>
+  <div class="seg" data-key="order">
+    <button data-val="seq">Secuencial</button>
+    <button data-val="rnd">Aleatorio</button>
+  </div>
+  <p class="hint" id="orderHint"></p>
+
+  <div class="label">Qué te enseño</div>
+  <div class="seg" data-key="dir">
+    <button data-val="n2c">Número</button>
+    <button data-val="c2n">Carta</button>
+    <button data-val="mix">Mixto</button>
+  </div>
+  <p class="hint" id="dirHint"></p>
+
+  <div class="label">Posiciones</div>
+  <div class="range">
+    <select id="from" aria-label="Desde"></select><span>a</span><select id="to" aria-label="Hasta"></select>
+  </div>
+  <div class="chips">
+    <button class="chip" data-f="1" data-t="52">Todas</button>
+    <button class="chip" data-f="1" data-t="13">1–13</button>
+    <button class="chip" data-f="14" data-t="26">14–26</button>
+    <button class="chip" data-f="27" data-t="39">27–39</button>
+    <button class="chip" data-f="40" data-t="52">40–52</button>
+  </div>
+
+  <div class="label">Cartas</div>
+  <div class="seg" data-key="filt">
+    <button data-val="all">Todas</button>
+    <button data-val="suit">Un palo</button>
+    <button data-val="rank">Un valor</button>
+  </div>
+  <div class="chips picks" id="suitChips" hidden>
+    <button class="chip" data-suit="P">♠︎ Picas</button>
+    <button class="chip r" data-suit="H">♥︎ Corazones</button>
+    <button class="chip" data-suit="C">♣︎ Tréboles</button>
+    <button class="chip r" data-suit="D">♦︎ Diamantes</button>
+  </div>
+  <div class="chips picks" id="rankChips" hidden>
+    <button class="chip" data-rank="A">A</button><button class="chip" data-rank="2">2</button><button class="chip" data-rank="3">3</button><button class="chip" data-rank="4">4</button><button class="chip" data-rank="5">5</button><button class="chip" data-rank="6">6</button><button class="chip" data-rank="7">7</button><button class="chip" data-rank="8">8</button><button class="chip" data-rank="9">9</button><button class="chip" data-rank="T">10</button><button class="chip" data-rank="J">J</button><button class="chip" data-rank="Q">Q</button><button class="chip" data-rank="K">K</button>
+  </div>
+  <p class="hint" id="filtHint"></p>
+
+  <div class="spacer"></div>
+  <button class="btn primary" id="startBtn">Empezar</button>
+  <button class="btn ghost" id="audioBtn">Escuchar en audio</button>
+  <button class="btn ghost" id="cutsBtn">Entrenar cortes</button>
+  <button class="btn ghost" id="subsBtn">Entrenar restas</button>
+  <button class="btn ghost" id="deckBtn">Ver la baraja completa</button>
+  <button class="btn ghost" id="glossBtn">Glosario de fórmulas</button>
+</section>
+
+<!-- ENTRENAMIENTO -->
+<section class="screen" id="train">
+  <div class="top">
+    <button class="link" id="quit">✕ Salir</button>
+    <div id="prog">1 / 52</div>
+    <div class="score"><span class="g" id="sOk">✓ 0</span><span class="r" id="sKo">✗ 0</span></div>
+  </div>
+  <div class="bar"><div id="fill"></div></div>
+  <div class="stage">
+    <div class="flip" id="flip">
+      <div class="face front" id="front"></div>
+      <div class="face back" id="back"></div>
+    </div>
+  </div>
+  <p class="tip" id="tip"></p>
+  <div class="actions" id="actions">
+    <button id="bKo">✗ Fallé</button>
+    <button id="bOk">✓ Acerté</button>
+  </div>
+  <div class="nav">
+    <button id="bPrev">‹ Anterior</button>
+    <button id="bNext">Siguiente ›</button>
+  </div>
+</section>
+
+<!-- RESULTADO -->
+<section class="screen" id="end">
+  <div class="result">
+    <div class="label" style="margin-top:0">Sesión terminada</div>
+    <div class="big" id="rScore"></div>
+    <div class="sub" id="rSub"></div>
+  </div>
+  <div class="label" id="rFailsLabel">Para repasar</div>
+  <div class="fails" id="rFails"></div>
+  <div class="spacer"></div>
+  <button class="btn primary" id="retryFails">Repasar fallos</button>
+  <button class="btn ghost" id="again">Repetir sesión</button>
+  <button class="btn ghost" id="toMenu">Menú</button>
+</section>
+
+<!-- CORTES -->
+<section class="screen" id="cuts">
+  <div class="top">
+    <button class="link" id="cBack">‹ Volver</button>
+    <div style="font-weight:700">Cortes</div>
+    <div id="cNum" style="min-width:60px;text-align:right;font-weight:700;font-variant-numeric:tabular-nums"></div>
+  </div>
+  <div class="seg kseg" style="margin-top:16px">
+    <button data-val="manual">Manual</button>
+    <button data-val="voice">Con voz</button>
+  </div>
+  <div class="cRow" id="cPrompt">
+    <div class="cCard" id="cCard"></div>
+    <div class="cArrow" aria-hidden="true">→</div>
+    <div class="cTarget"><small>Posición</small><b id="cTo"></b></div>
+  </div>
+  <p class="cAsk" id="cAsk">¿Qué carta cortas y adónde la llevas?</p>
+  <div class="cSol" id="cSol" hidden>
+    <ul class="cSteps" id="cSteps"></ul>
+    <div class="cRes">
+      <div id="cCutCard"></div>
+      <div><div class="cDir" id="cDir"></div><div class="cNote" id="cNote"></div></div>
+    </div>
+  </div>
+  <div class="spacer"></div>
+  <div class="aCtl" style="margin-top:18px">
+    <button class="btn primary" id="cBtn" style="margin-top:0">Revelar</button>
+    <button class="btn ghost" id="cNext" aria-label="Siguiente escenario" style="width:64px;flex:none;font-size:1.3rem;margin-top:0" hidden>›</button>
+  </div>
+  <p class="hint" id="cNotice" hidden></p>
+  <div id="cVoice" hidden>
+    <div class="label">Pausa para pensar · <span id="kThinkOut" style="text-transform:none"></span></div>
+    <input type="range" id="kThink" min="0" max="15" step="0.5" aria-label="Pausa para pensar">
+    <div class="label">Pausa entre pasos de la explicación · <span id="kStepOut" style="text-transform:none"></span></div>
+    <input type="range" id="kStep" min="0" max="4" step="0.25" aria-label="Pausa entre pasos de la explicación">
+    <div class="label">Pausa hasta el siguiente · <span id="kNextOut" style="text-transform:none"></span></div>
+    <input type="range" id="kNext" min="0.5" max="8" step="0.5" aria-label="Pausa hasta el siguiente">
+    <div class="label">Velocidad de la voz · <span id="kRateOut" style="text-transform:none"></span></div>
+    <input type="range" id="kRate" min="0.6" max="1.4" step="0.1" aria-label="Velocidad de la voz">
+  </div>
+</section>
+
+<!-- RESTAS -->
+<section class="screen" id="subs">
+  <div class="top">
+    <button class="link" id="rBack">‹ Volver</button>
+    <div style="font-weight:700">Restas</div>
+    <div id="rNum" style="min-width:60px;text-align:right;font-weight:700;font-variant-numeric:tabular-nums"></div>
+  </div>
+  <div class="seg rseg" style="margin-top:16px">
+    <button data-val="diff">Entre dos números</button>
+    <button data-val="c53">Complemento a 53</button>
+  </div>
+  <div class="rBoard" id="rBoard">
+    <div class="rEq"><span id="rA"></span><span class="op">−</span><span id="rB"></span><span class="op">=</span><span class="rRes q" id="rR">?</span></div>
+    <div class="rTip" id="rTip">Toca para ver el resultado</div>
+  </div>
+  <div class="aCtl" style="margin-top:18px">
+    <button class="btn primary" id="rPlay">▶ Cantar</button>
+    <button class="btn ghost" id="rNext" aria-label="Siguiente" style="width:64px;flex:none;font-size:1.3rem;margin-top:0">›</button>
+  </div>
+  <p class="hint" id="rNotice" hidden></p>
+  <div class="label">Pausa hasta el resultado · <span id="rThinkOut" style="text-transform:none"></span></div>
+  <input type="range" id="rThink" min="0" max="8" step="0.5" aria-label="Pausa hasta el resultado">
+  <div class="label">Pausa hasta la siguiente · <span id="rGapOut" style="text-transform:none"></span></div>
+  <input type="range" id="rGap" min="0.5" max="6" step="0.5" aria-label="Pausa hasta la siguiente">
+  <div class="label">Velocidad de la voz · <span id="rRateOut" style="text-transform:none"></span></div>
+  <input type="range" id="rRate" min="0.6" max="1.4" step="0.1" aria-label="Velocidad de la voz">
+</section>
+
+<!-- AUDIO -->
+<section class="screen" id="audio">
+  <div class="top">
+    <button class="link" id="aBack">‹ Volver</button>
+    <div style="font-weight:700">Escuchar</div>
+    <div id="aProg" style="min-width:60px;text-align:right;font-weight:700;font-variant-numeric:tabular-nums">1 / 52</div>
+  </div>
+  <div class="stage" id="aStageWrap"><div id="aStage"></div></div>
+  <p class="hint" id="aInfo" style="text-align:center;margin:0 0 14px"></p>
+  <div class="aCtl">
+    <button class="btn primary" id="aPlay">▶ Reproducir</button>
+    <button class="btn ghost" id="aReset" aria-label="Volver al principio">↺</button>
+  </div>
+  <p class="hint" id="aNoVoice" hidden></p>
+  <div class="label">Modo</div>
+  <div class="seg aseg">
+    <button data-val="say">Recitar</button>
+    <button data-val="n2c">Nº → carta</button>
+    <button data-val="c2n">Carta → nº</button>
+    <button data-val="onum">Solo números</button>
+    <button data-val="ocard">Solo cartas</button>
+  </div>
+  <p class="hint" id="aModeHint"></p>
+  <div id="aInnerBox">
+    <div class="label">Pausa entre número y carta · <span id="aInnerOut" style="text-transform:none"></span></div>
+    <input type="range" id="aInner" min="0" max="5" step="0.1" aria-label="Pausa entre número y carta">
+  </div>
+  <div class="label">Pausa entre cartas · <span id="aGapOut" style="text-transform:none"></span></div>
+  <input type="range" id="aGap" min="0.5" max="6" step="0.5" aria-label="Pausa entre cartas">
+  <div class="label">Velocidad de la voz · <span id="aRateOut" style="text-transform:none"></span></div>
+  <input type="range" id="aRate" min="0.6" max="1.4" step="0.1" aria-label="Velocidad de la voz">
+  <label class="tog"><input type="checkbox" id="aLoop"> Repetir al terminar</label>
+  <label class="tog"><input type="checkbox" id="aShow"> Mostrar la carta mientras suena</label>
+</section>
+
+<!-- GLOSARIO -->
+<section class="screen" id="gloss">
+  <div class="top">
+    <button class="link" id="glossBack">‹ Volver</button>
+    <div style="font-weight:700">Glosario de fórmulas</div>
+    <div style="width:60px"></div>
+  </div>
+
+  <section class="gSec">
+    <h2>Carta al número</h2>
+    <p class="gIntro">Te piden una carta y una posición. Con un solo corte tienes que dejar esa carta en esa posición. Llama <b>C</b> a la posición actual de la carta y <b>D</b> a la posición de destino. El resultado <b>N</b> es la posición de la carta que usas como referencia para cortar.</p>
+
+    <div class="gCase">
+      <h3>Destino anterior a la carta <span class="gTag down">D &lt; C · corte abajo</span></h3>
+      <div class="gMove">(cuando tienes que subir la carta)</div>
+      <div class="gFormula">N = C − D</div>
+      <p>La carta tiene que subir. Resta directa: corta dejando <b>abajo del todo</b> la carta que está en la posición N.</p>
+      <div class="gEx">Ejemplo: <b><span class="rd">9♦︎</span></b> (C = <b>52</b>) a la D = <b>10</b>.<br>N = 52 − 10 = <b>42</b> → en la 42 está el <b><span class="rd">4♦︎</span></b> → corta dejando el <span class="rd">4♦︎</span> abajo.</div>
+    </div>
+
+    <div class="gCase">
+      <h3>Destino posterior a la carta <span class="gTag up">D &gt; C · corte arriba</span></h3>
+      <div class="gMove">(cuando tienes que bajar la carta)</div>
+      <div class="gFormula">N = 53 − (D − C)</div>
+      <p>La carta tiene que bajar. Resta la diferencia y saca su complemento a 53: corta dejando <b>arriba del todo</b> la carta que está en la posición N.</p>
+      <div class="gEx">Ejemplo: <b><span class="rd">7♦︎</span></b> (C = <b>3</b>) a la D = <b>10</b>.<br>N = 53 − (10 − 3) = 53 − 7 = <b>46</b> → en la 46 está la <b><span class="rd">Q♦︎</span></b> → corta dejando la <span class="rd">Q♦︎</span> arriba.</div>
+    </div>
+
+    <p class="gNote">Si D = C la carta ya está en su sitio: no hay que cortar.</p>
+  </section>
+</section>
+
+<!-- BARAJA -->
+<section class="screen" id="deck">
+  <div class="top">
+    <button class="link" id="deckBack">‹ Volver</button>
+    <div style="font-weight:700">La baraja</div>
+    <div style="width:60px"></div>
+  </div>
+  <div class="grid" id="grid"></div>
+</section>

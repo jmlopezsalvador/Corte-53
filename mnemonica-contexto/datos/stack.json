@@ -1,0 +1,473 @@
+{
+  "descripcion": "Orden Mnemónica de Juan Tamariz. Posición 1 = carta superior del mazo boca abajo. Códigos de palo: C=tréboles, H=corazones, D=diamantes, P=picas. Rango T=10.",
+  "cartas": [
+    {
+      "posicion": 1,
+      "codigo": "4C",
+      "rango": "4",
+      "palo": "C",
+      "nombre": "4 de tréboles",
+      "corto": "4♣",
+      "color": "negro"
+    },
+    {
+      "posicion": 2,
+      "codigo": "2H",
+      "rango": "2",
+      "palo": "H",
+      "nombre": "2 de corazones",
+      "corto": "2♥",
+      "color": "rojo"
+    },
+    {
+      "posicion": 3,
+      "codigo": "7D",
+      "rango": "7",
+      "palo": "D",
+      "nombre": "7 de diamantes",
+      "corto": "7♦",
+      "color": "rojo"
+    },
+    {
+      "posicion": 4,
+      "codigo": "3C",
+      "rango": "3",
+      "palo": "C",
+      "nombre": "3 de tréboles",
+      "corto": "3♣",
+      "color": "negro"
+    },
+    {
+      "posicion": 5,
+      "codigo": "4H",
+      "rango": "4",
+      "palo": "H",
+      "nombre": "4 de corazones",
+      "corto": "4♥",
+      "color": "rojo"
+    },
+    {
+      "posicion": 6,
+      "codigo": "6D",
+      "rango": "6",
+      "palo": "D",
+      "nombre": "6 de diamantes",
+      "corto": "6♦",
+      "color": "rojo"
+    },
+    {
+      "posicion": 7,
+      "codigo": "AP",
+      "rango": "A",
+      "palo": "P",
+      "nombre": "As de picas",
+      "corto": "A♠",
+      "color": "negro"
+    },
+    {
+      "posicion": 8,
+      "codigo": "5H",
+      "rango": "5",
+      "palo": "H",
+      "nombre": "5 de corazones",
+      "corto": "5♥",
+      "color": "rojo"
+    },
+    {
+      "posicion": 9,
+      "codigo": "9P",
+      "rango": "9",
+      "palo": "P",
+      "nombre": "9 de picas",
+      "corto": "9♠",
+      "color": "negro"
+    },
+    {
+      "posicion": 10,
+      "codigo": "2P",
+      "rango": "2",
+      "palo": "P",
+      "nombre": "2 de picas",
+      "corto": "2♠",
+      "color": "negro"
+    },
+    {
+      "posicion": 11,
+      "codigo": "QH",
+      "rango": "Q",
+      "palo": "H",
+      "nombre": "Reina de corazones",
+      "corto": "Q♥",
+      "color": "rojo"
+    },
+    {
+      "posicion": 12,
+      "codigo": "3D",
+      "rango": "3",
+      "palo": "D",
+      "nombre": "3 de diamantes",
+      "corto": "3♦",
+      "color": "rojo"
+    },
+    {
+      "posicion": 13,
+      "codigo": "QC",
+      "rango": "Q",
+      "palo": "C",
+      "nombre": "Reina de tréboles",
+      "corto": "Q♣",
+      "color": "negro"
+    },
+    {
+      "posicion": 14,
+      "codigo": "8H",
+      "rango": "8",
+      "palo": "H",
+      "nombre": "8 de corazones",
+      "corto": "8♥",
+      "color": "rojo"
+    },
+    {
+      "posicion": 15,
+      "codigo": "6P",
+      "rango": "6",
+      "palo": "P",
+      "nombre": "6 de picas",
+      "corto": "6♠",
+      "color": "negro"
+    },
+    {
+      "posicion": 16,
+      "codigo": "5P",
+      "rango": "5",
+      "palo": "P",
+      "nombre": "5 de picas",
+      "corto": "5♠",
+      "color": "negro"
+    },
+    {
+      "posicion": 17,
+      "codigo": "9H",
+      "rango": "9",
+      "palo": "H",
+      "nombre": "9 de corazones",
+      "corto": "9♥",
+      "color": "rojo"
+    },
+    {
+      "posicion": 18,
+      "codigo": "KC",
+      "rango": "K",
+      "palo": "C",
+      "nombre": "Rey de tréboles",
+      "corto": "K♣",
+      "color": "negro"
+    },
+    {
+      "posicion": 19,
+      "codigo": "2D",
+      "rango": "2",
+      "palo": "D",
+      "nombre": "2 de diamantes",
+      "corto": "2♦",
+      "color": "rojo"
+    },
+    {
+      "posicion": 20,
+      "codigo": "JH",
+      "rango": "J",
+      "palo": "H",
+      "nombre": "Jota de corazones",
+      "corto": "J♥",
+      "color": "rojo"
+    },
+    {
+      "posicion": 21,
+      "codigo": "3P",
+      "rango": "3",
+      "palo": "P",
+      "nombre": "3 de picas",
+      "corto": "3♠",
+      "color": "negro"
+    },
+    {
+      "posicion": 22,
+      "codigo": "8P",
+      "rango": "8",
+      "palo": "P",
+      "nombre": "8 de picas",
+      "corto": "8♠",
+      "color": "negro"
+    },
+    {
+      "posicion": 23,
+      "codigo": "6H",
+      "rango": "6",
+      "palo": "H",
+      "nombre": "6 de corazones",
+      "corto": "6♥",
+      "color": "rojo"
+    },
+    {
+      "posicion": 24,
+      "codigo": "TC",
+      "rango": "10",
+      "palo": "C",
+      "nombre": "10 de tréboles",
+      "corto": "10♣",
+      "color": "negro"
+    },
+    {
+      "posicion": 25,
+      "codigo": "5D",
+      "rango": "5",
+      "palo": "D",
+      "nombre": "5 de diamantes",
+      "corto": "5♦",
+      "color": "rojo"
+    },
+    {
+      "posicion": 26,
+      "codigo": "KD",
+      "rango": "K",
+      "palo": "D",
+      "nombre": "Rey de diamantes",
+      "corto": "K♦",
+      "color": "rojo"
+    },
+    {
+      "posicion": 27,
+      "codigo": "2C",
+      "rango": "2",
+      "palo": "C",
+      "nombre": "2 de tréboles",
+      "corto": "2♣",
+      "color": "negro"
+    },
+    {
+      "posicion": 28,
+      "codigo": "3H",
+      "rango": "3",
+      "palo": "H",
+      "nombre": "3 de corazones",
+      "corto": "3♥",
+      "color": "rojo"
+    },
+    {
+      "posicion": 29,
+      "codigo": "8D",
+      "rango": "8",
+      "palo": "D",
+      "nombre": "8 de diamantes",
+      "corto": "8♦",
+      "color": "rojo"
+    },
+    {
+      "posicion": 30,
+      "codigo": "5C",
+      "rango": "5",
+      "palo": "C",
+      "nombre": "5 de tréboles",
+      "corto": "5♣",
+      "color": "negro"
+    },
+    {
+      "posicion": 31,
+      "codigo": "KP",
+      "rango": "K",
+      "palo": "P",
+      "nombre": "Rey de picas",
+      "corto": "K♠",
+      "color": "negro"
+    },
+    {
+      "posicion": 32,
+      "codigo": "JD",
+      "rango": "J",
+      "palo": "D",
+      "nombre": "Jota de diamantes",
+      "corto": "J♦",
+      "color": "rojo"
+    },
+    {
+      "posicion": 33,
+      "codigo": "8C",
+      "rango": "8",
+      "palo": "C",
+      "nombre": "8 de tréboles",
+      "corto": "8♣",
+      "color": "negro"
+    },
+    {
+      "posicion": 34,
+      "codigo": "TP",
+      "rango": "10",
+      "palo": "P",
+      "nombre": "10 de picas",
+      "corto": "10♠",
+      "color": "negro"
+    },
+    {
+      "posicion": 35,
+      "codigo": "KH",
+      "rango": "K",
+      "palo": "H",
+      "nombre": "Rey de corazones",
+      "corto": "K♥",
+      "color": "rojo"
+    },
+    {
+      "posicion": 36,
+      "codigo": "JC",
+      "rango": "J",
+      "palo": "C",
+      "nombre": "Jota de tréboles",
+      "corto": "J♣",
+      "color": "negro"
+    },
+    {
+      "posicion": 37,
+      "codigo": "7P",
+      "rango": "7",
+      "palo": "P",
+      "nombre": "7 de picas",
+      "corto": "7♠",
+      "color": "negro"
+    },
+    {
+      "posicion": 38,
+      "codigo": "TH",
+      "rango": "10",
+      "palo": "H",
+      "nombre": "10 de corazones",
+      "corto": "10♥",
+      "color": "rojo"
+    },
+    {
+      "posicion": 39,
+      "codigo": "AD",
+      "rango": "A",
+      "palo": "D",
+      "nombre": "As de diamantes",
+      "corto": "A♦",
+      "color": "rojo"
+    },
+    {
+      "posicion": 40,
+      "codigo": "4P",
+      "rango": "4",
+      "palo": "P",
+      "nombre": "4 de picas",
+      "corto": "4♠",
+      "color": "negro"
+    },
+    {
+      "posicion": 41,
+      "codigo": "7H",
+      "rango": "7",
+      "palo": "H",
+      "nombre": "7 de corazones",
+      "corto": "7♥",
+      "color": "rojo"
+    },
+    {
+      "posicion": 42,
+      "codigo": "4D",
+      "rango": "4",
+      "palo": "D",
+      "nombre": "4 de diamantes",
+      "corto": "4♦",
+      "color": "rojo"
+    },
+    {
+      "posicion": 43,
+      "codigo": "AC",
+      "rango": "A",
+      "palo": "C",
+      "nombre": "As de tréboles",
+      "corto": "A♣",
+      "color": "negro"
+    },
+    {
+      "posicion": 44,
+      "codigo": "9C",
+      "rango": "9",
+      "palo": "C",
+      "nombre": "9 de tréboles",
+      "corto": "9♣",
+      "color": "negro"
+    },
+    {
+      "posicion": 45,
+      "codigo": "JP",
+      "rango": "J",
+      "palo": "P",
+      "nombre": "Jota de picas",
+      "corto": "J♠",
+      "color": "negro"
+    },
+    {
+      "posicion": 46,
+      "codigo": "QD",
+      "rango": "Q",
+      "palo": "D",
+      "nombre": "Reina de diamantes",
+      "corto": "Q♦",
+      "color": "rojo"
+    },
+    {
+      "posicion": 47,
+      "codigo": "7C",
+      "rango": "7",
+      "palo": "C",
+      "nombre": "7 de tréboles",
+      "corto": "7♣",
+      "color": "negro"
+    },
+    {
+      "posicion": 48,
+      "codigo": "QP",
+      "rango": "Q",
+      "palo": "P",
+      "nombre": "Reina de picas",
+      "corto": "Q♠",
+      "color": "negro"
+    },
+    {
+      "posicion": 49,
+      "codigo": "TD",
+      "rango": "10",
+      "palo": "D",
+      "nombre": "10 de diamantes",
+      "corto": "10♦",
+      "color": "rojo"
+    },
+    {
+      "posicion": 50,
+      "codigo": "6C",
+      "rango": "6",
+      "palo": "C",
+      "nombre": "6 de tréboles",
+      "corto": "6♣",
+      "color": "negro"
+    },
+    {
+      "posicion": 51,
+      "codigo": "AH",
+      "rango": "A",
+      "palo": "H",
+      "nombre": "As de corazones",
+      "corto": "A♥",
+      "color": "rojo"
+    },
+    {
+      "posicion": 52,
+      "codigo": "9D",
+      "rango": "9",
+      "palo": "D",
+      "nombre": "9 de diamantes",
+      "corto": "9♦",
+      "color": "rojo"
+    }
+  ]
+}

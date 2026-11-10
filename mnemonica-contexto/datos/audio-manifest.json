@@ -1,0 +1,455 @@
+{
+  "formato": "MP3 mono 24 kHz 40 kbps",
+  "voz": "Kokoro v1.0 (ONNX int8), voz ef_dora, idioma es",
+  "carpeta": "audio/",
+  "clips": {
+    "n1": {
+      "texto": "uno",
+      "uso": "número"
+    },
+    "n2": {
+      "texto": "dos",
+      "uso": "número"
+    },
+    "n3": {
+      "texto": "tres",
+      "uso": "número"
+    },
+    "n4": {
+      "texto": "cuatro",
+      "uso": "número"
+    },
+    "n5": {
+      "texto": "cinco",
+      "uso": "número"
+    },
+    "n6": {
+      "texto": "seis",
+      "uso": "número"
+    },
+    "n7": {
+      "texto": "siete",
+      "uso": "número"
+    },
+    "n8": {
+      "texto": "ocho",
+      "uso": "número"
+    },
+    "n9": {
+      "texto": "nueve",
+      "uso": "número"
+    },
+    "n10": {
+      "texto": "diez",
+      "uso": "número"
+    },
+    "n11": {
+      "texto": "once",
+      "uso": "número"
+    },
+    "n12": {
+      "texto": "doce",
+      "uso": "número"
+    },
+    "n13": {
+      "texto": "trece",
+      "uso": "número"
+    },
+    "n14": {
+      "texto": "catorce",
+      "uso": "número"
+    },
+    "n15": {
+      "texto": "quince",
+      "uso": "número"
+    },
+    "n16": {
+      "texto": "dieciséis",
+      "uso": "número"
+    },
+    "n17": {
+      "texto": "diecisiete",
+      "uso": "número"
+    },
+    "n18": {
+      "texto": "dieciocho",
+      "uso": "número"
+    },
+    "n19": {
+      "texto": "diecinueve",
+      "uso": "número"
+    },
+    "n20": {
+      "texto": "veinte",
+      "uso": "número"
+    },
+    "n21": {
+      "texto": "veintiuno",
+      "uso": "número"
+    },
+    "n22": {
+      "texto": "veintidós",
+      "uso": "número"
+    },
+    "n23": {
+      "texto": "veintitrés",
+      "uso": "número"
+    },
+    "n24": {
+      "texto": "veinticuatro",
+      "uso": "número"
+    },
+    "n25": {
+      "texto": "veinticinco",
+      "uso": "número"
+    },
+    "n26": {
+      "texto": "veintiséis",
+      "uso": "número"
+    },
+    "n27": {
+      "texto": "veintisiete",
+      "uso": "número"
+    },
+    "n28": {
+      "texto": "veintiocho",
+      "uso": "número"
+    },
+    "n29": {
+      "texto": "veintinueve",
+      "uso": "número"
+    },
+    "n30": {
+      "texto": "treinta",
+      "uso": "número"
+    },
+    "n31": {
+      "texto": "treinta y uno",
+      "uso": "número"
+    },
+    "n32": {
+      "texto": "treinta y dos",
+      "uso": "número"
+    },
+    "n33": {
+      "texto": "treinta y tres",
+      "uso": "número"
+    },
+    "n34": {
+      "texto": "treinta y cuatro",
+      "uso": "número"
+    },
+    "n35": {
+      "texto": "treinta y cinco",
+      "uso": "número"
+    },
+    "n36": {
+      "texto": "treinta y seis",
+      "uso": "número"
+    },
+    "n37": {
+      "texto": "treinta y siete",
+      "uso": "número"
+    },
+    "n38": {
+      "texto": "treinta y ocho",
+      "uso": "número"
+    },
+    "n39": {
+      "texto": "treinta y nueve",
+      "uso": "número"
+    },
+    "n40": {
+      "texto": "cuarenta",
+      "uso": "número"
+    },
+    "n41": {
+      "texto": "cuarenta y uno",
+      "uso": "número"
+    },
+    "n42": {
+      "texto": "cuarenta y dos",
+      "uso": "número"
+    },
+    "n43": {
+      "texto": "cuarenta y tres",
+      "uso": "número"
+    },
+    "n44": {
+      "texto": "cuarenta y cuatro",
+      "uso": "número"
+    },
+    "n45": {
+      "texto": "cuarenta y cinco",
+      "uso": "número"
+    },
+    "n46": {
+      "texto": "cuarenta y seis",
+      "uso": "número"
+    },
+    "n47": {
+      "texto": "cuarenta y siete",
+      "uso": "número"
+    },
+    "n48": {
+      "texto": "cuarenta y ocho",
+      "uso": "número"
+    },
+    "n49": {
+      "texto": "cuarenta y nueve",
+      "uso": "número"
+    },
+    "n50": {
+      "texto": "cincuenta",
+      "uso": "número"
+    },
+    "n51": {
+      "texto": "cincuenta y uno",
+      "uso": "número"
+    },
+    "n52": {
+      "texto": "cincuenta y dos",
+      "uso": "número"
+    },
+    "n53": {
+      "texto": "cincuenta y tres",
+      "uso": "número"
+    },
+    "c4C": {
+      "texto": "cuatro de tréboles",
+      "uso": "carta"
+    },
+    "c2H": {
+      "texto": "dos de corazones",
+      "uso": "carta"
+    },
+    "c7D": {
+      "texto": "siete de diamantes",
+      "uso": "carta"
+    },
+    "c3C": {
+      "texto": "tres de tréboles",
+      "uso": "carta"
+    },
+    "c4H": {
+      "texto": "cuatro de corazones",
+      "uso": "carta"
+    },
+    "c6D": {
+      "texto": "seis de diamantes",
+      "uso": "carta"
+    },
+    "cAP": {
+      "texto": "as de picas",
+      "uso": "carta"
+    },
+    "c5H": {
+      "texto": "cinco de corazones",
+      "uso": "carta"
+    },
+    "c9P": {
+      "texto": "nueve de picas",
+      "uso": "carta"
+    },
+    "c2P": {
+      "texto": "dos de picas",
+      "uso": "carta"
+    },
+    "cQH": {
+      "texto": "reina de corazones",
+      "uso": "carta"
+    },
+    "c3D": {
+      "texto": "tres de diamantes",
+      "uso": "carta"
+    },
+    "cQC": {
+      "texto": "reina de tréboles",
+      "uso": "carta"
+    },
+    "c8H": {
+      "texto": "ocho de corazones",
+      "uso": "carta"
+    },
+    "c6P": {
+      "texto": "seis de picas",
+      "uso": "carta"
+    },
+    "c5P": {
+      "texto": "cinco de picas",
+      "uso": "carta"
+    },
+    "c9H": {
+      "texto": "nueve de corazones",
+      "uso": "carta"
+    },
+    "cKC": {
+      "texto": "rey de tréboles",
+      "uso": "carta"
+    },
+    "c2D": {
+      "texto": "dos de diamantes",
+      "uso": "carta"
+    },
+    "cJH": {
+      "texto": "jota de corazones",
+      "uso": "carta"
+    },
+    "c3P": {
+      "texto": "tres de picas",
+      "uso": "carta"
+    },
+    "c8P": {
+      "texto": "ocho de picas",
+      "uso": "carta"
+    },
+    "c6H": {
+      "texto": "seis de corazones",
+      "uso": "carta"
+    },
+    "cTC": {
+      "texto": "diez de tréboles",
+      "uso": "carta"
+    },
+    "c5D": {
+      "texto": "cinco de diamantes",
+      "uso": "carta"
+    },
+    "cKD": {
+      "texto": "rey de diamantes",
+      "uso": "carta"
+    },
+    "c2C": {
+      "texto": "dos de tréboles",
+      "uso": "carta"
+    },
+    "c3H": {
+      "texto": "tres de corazones",
+      "uso": "carta"
+    },
+    "c8D": {
+      "texto": "ocho de diamantes",
+      "uso": "carta"
+    },
+    "c5C": {
+      "texto": "cinco de tréboles",
+      "uso": "carta"
+    },
+    "cKP": {
+      "texto": "rey de picas",
+      "uso": "carta"
+    },
+    "cJD": {
+      "texto": "jota de diamantes",
+      "uso": "carta"
+    },
+    "c8C": {
+      "texto": "ocho de tréboles",
+      "uso": "carta"
+    },
+    "cTP": {
+      "texto": "diez de picas",
+      "uso": "carta"
+    },
+    "cKH": {
+      "texto": "rey de corazones",
+      "uso": "carta"
+    },
+    "cJC": {
+      "texto": "jota de tréboles",
+      "uso": "carta"
+    },
+    "c7P": {
+      "texto": "siete de picas",
+      "uso": "carta"
+    },
+    "cTH": {
+      "texto": "diez de corazones",
+      "uso": "carta"
+    },
+    "cAD": {
+      "texto": "as de diamantes",
+      "uso": "carta"
+    },
+    "c4P": {
+      "texto": "cuatro de picas",
+      "uso": "carta"
+    },
+    "c7H": {
+      "texto": "siete de corazones",
+      "uso": "carta"
+    },
+    "c4D": {
+      "texto": "cuatro de diamantes",
+      "uso": "carta"
+    },
+    "cAC": {
+      "texto": "as de tréboles",
+      "uso": "carta"
+    },
+    "c9C": {
+      "texto": "nueve de tréboles",
+      "uso": "carta"
+    },
+    "cJP": {
+      "texto": "jota de picas",
+      "uso": "carta"
+    },
+    "cQD": {
+      "texto": "reina de diamantes",
+      "uso": "carta"
+    },
+    "c7C": {
+      "texto": "siete de tréboles",
+      "uso": "carta"
+    },
+    "cQP": {
+      "texto": "reina de picas",
+      "uso": "carta"
+    },
+    "cTD": {
+      "texto": "diez de diamantes",
+      "uso": "carta"
+    },
+    "c6C": {
+      "texto": "seis de tréboles",
+      "uso": "carta"
+    },
+    "cAH": {
+      "texto": "as de corazones",
+      "uso": "carta"
+    },
+    "c9D": {
+      "texto": "nueve de diamantes",
+      "uso": "carta"
+    },
+    "minus": {
+      "texto": "menos",
+      "uso": "restas y cortes"
+    },
+    "kAla": {
+      "texto": "a la posición",
+      "uso": "propuesta de cortes"
+    },
+    "kEsta": {
+      "texto": "está en la",
+      "uso": "explicación de cortes"
+    },
+    "kEs": {
+      "texto": "es",
+      "uso": "explicación de cortes"
+    },
+    "kEnla": {
+      "texto": "en la",
+      "uso": "explicación de cortes"
+    },
+    "kUp": {
+      "texto": "cortar arriba",
+      "uso": "explicación de cortes"
+    },
+    "kDown": {
+      "texto": "cortar abajo",
+      "uso": "explicación de cortes"
+    }
+  }
+}
