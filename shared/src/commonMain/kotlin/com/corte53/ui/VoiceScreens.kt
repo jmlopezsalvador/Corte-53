@@ -119,7 +119,7 @@ private fun ControlRow(primary: String, onPrimary: () -> Unit, small: String?, o
 @Composable
 fun ListenScreen(
     menu: MenuSettings, audio: AudioSettings, onAudio: (AudioSettings) -> Unit,
-    speech: SpeechEngine, onBack: () -> Unit,
+    speech: SpeechEngine, voiceId: String?, onBack: () -> Unit,
 ) {
     val runner = remember(speech) { SequenceRunner(speech) }
     val voice = rememberVoice()
@@ -187,6 +187,7 @@ fun ListenScreen(
             if (voice.on) "❚❚ Pausa" else if (finished) "▶ Otra vez" else if (i > 0) "▶ Continuar" else "▶ Reproducir",
             ::play, "↺", ::reset,
         )
+        VoiceWarning(speech, voiceId)
         VoiceNotice(voice.error ?: if (emptyNotice) "No hay cartas con ese filtro en el rango elegido. Cámbialo en el menú." else null)
 
         Label("Modo")
@@ -223,7 +224,7 @@ fun ListenScreen(
 @Composable
 fun CutsScreen(
     menu: MenuSettings, cuts: CutSettings, onCuts: (CutSettings) -> Unit,
-    speech: SpeechEngine, onBack: () -> Unit,
+    speech: SpeechEngine, voiceId: String?, onBack: () -> Unit,
 ) {
     val runner = remember(speech) { SequenceRunner(speech) }
     val voice = rememberVoice()
@@ -322,6 +323,7 @@ fun CutsScreen(
                         ::act, if (cuts.voice) "›" else null, ::skip,
                     )
                 }
+                if (cuts.voice) VoiceWarning(speech, voiceId)
                 VoiceNotice(voice.error)
                 if (cuts.voice) {
                     LabeledSlider("Pausa para pensar", cuts.think, "${dec(cuts.think)} s", 0.0, 15.0, 0.5) { onCuts(cuts.copy(think = it)) }
@@ -376,7 +378,7 @@ private fun CutSolution(cut: com.corte53.domain.Cut) {
 // =====================================================================================================
 
 @Composable
-fun SubtractionsScreen(subs: SubtractionSettings, onSubs: (SubtractionSettings) -> Unit, speech: SpeechEngine, onBack: () -> Unit) {
+fun SubtractionsScreen(subs: SubtractionSettings, onSubs: (SubtractionSettings) -> Unit, speech: SpeechEngine, voiceId: String?, onBack: () -> Unit) {
     val runner = remember(speech) { SequenceRunner(speech) }
     val voice = rememberVoice()
     var n by remember { mutableStateOf(1) }
@@ -458,6 +460,7 @@ fun SubtractionsScreen(subs: SubtractionSettings, onSubs: (SubtractionSettings) 
                 if (was) cycle()
             }
         }
+        VoiceWarning(speech, voiceId)
         VoiceNotice(voice.error)
         LabeledSlider("Pausa hasta el resultado", subs.think, "${dec(subs.think)} s", 0.0, 8.0, 0.5) { onSubs(subs.copy(think = it)) }
         LabeledSlider("Pausa hasta la siguiente", subs.gap, "${dec(subs.gap)} s", 0.5, 6.0, 0.5) { onSubs(subs.copy(gap = it)) }

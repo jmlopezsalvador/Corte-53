@@ -3,6 +3,7 @@ package com.corte53.audio
 import android.content.Context
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
+import android.speech.tts.Voice
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -37,23 +38,48 @@ class AndroidSpeechEngine(context: Context) : SpeechEngine {
         })
     }
 
-    override val voices: List<SpeechVoice>
-        get() = runCatching {
-            tts.voices.orEmpty()
-                .filter { it.locale.language == "es" && !it.isNetworkConnectionRequired }
-                .sortedBy { it.name }
-                .map { SpeechVoice(it.name, "${it.name} (${it.locale.displayCountry.ifBlank { it.locale.language }})") }
-        }.getOrDefault(emptyList())
+    private fun spanish(): List<Voice> = runCatching {
+        tts.voices.orEmpty().filter { it.locale.language == "es" && !it.features.orEmpty().contains("notInstalled") }
+    }.getOrDefault(emptyList())
+
+    /** La elegida; si no, la mejor instalada en el móvil (España primero, mayor calidad); si no, ninguna. */
+    private fun selected(): Voice? {
+        val all = spanish()
+        voiceId?.let { id -> all.firstOrNull { it.name == id }?.let { return it } }
+        return all.filter { !it.isNetworkConnectionRequired }
+            .sortedWith(compareByDescending<Voice> { it.locale.country == "ES" }.thenByDescending { it.quality })
+            .firstOrNull()
+    }
+
+    private fun Voice.toSpeechVoice(): SpeechVoice {
+        val variant = name.substringAfter("-x-", "").substringBefore("-")
+        val place = locale.getDisplayName(Locale("es")).replaceFirstChar { it.uppercase() }
+        return SpeechVoice(name, if (variant.isNotEmpty()) "$place · $variant" else place, isNetworkConnectionRequired)
+    }
+
+    /** Aplica la voz elegida y devuelve la que quedará activa (puede ser de red si no hay otra). */
+    private fun apply(): Voice? {
+        val v = selected()
+        if (v != null) tts.setVoice(v) else tts.setLanguage(Locale("es", "ES"))
+        return tts.voice?.takeIf { it.locale.language == "es" }
+    }
+
+    override suspend fun loadVoices(): List<SpeechVoice> {
+        if (!ready.await()) return emptyList()
+        return spanish().sortedWith(compareBy<Voice>({ it.isNetworkConnectionRequired }, { it.locale.country != "ES" }, { it.name }))
+            .map { it.toSpeechVoice() }
+    }
+
+    override suspend fun activeVoice(): SpeechVoice? {
+        if (!ready.await()) return null
+        return apply()?.toSpeechVoice()
+    }
 
     override fun setVoice(id: String?) { voiceId = id }
 
     override suspend fun speak(text: String, rate: Double) {
         if (!ready.await()) throw SpeechException("No hay motor de voz (Texto a voz) en este móvil")
-        val voice = voiceId?.let { id -> runCatching { tts.voices.firstOrNull { it.name == id } }.getOrNull() }
-        val langResult = if (voice != null) tts.setVoice(voice) else tts.setLanguage(Locale("es", "ES"))
-        if (langResult == TextToSpeech.LANG_MISSING_DATA || langResult == TextToSpeech.LANG_NOT_SUPPORTED) {
-            throw SpeechException("Falta la voz en español: instálala en Ajustes → Texto a voz")
-        }
+        if (apply() == null) throw SpeechException("Falta la voz en español: instálala en Ajustes → Texto a voz")
         tts.setSpeechRate(rate.toFloat())   // el tono se conserva
         val id = "u${counter++}"
         suspendCancellableCoroutine { cont ->

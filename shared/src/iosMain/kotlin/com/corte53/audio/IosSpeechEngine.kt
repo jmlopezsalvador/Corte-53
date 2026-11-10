@@ -40,12 +40,16 @@ class IosSpeechEngine : SpeechEngine {
         }
     }
 
-    override val voices: List<SpeechVoice>
-        get() = AVSpeechSynthesisVoice.speechVoices()
-            .filterIsInstance<AVSpeechSynthesisVoice>()
-            .filter { it.language.startsWith("es") }
-            .sortedBy { it.name }
-            .map { SpeechVoice(it.identifier, "${it.name} (${it.language})") }
+    override suspend fun loadVoices(): List<SpeechVoice> = AVSpeechSynthesisVoice.speechVoices()
+        .filterIsInstance<AVSpeechSynthesisVoice>()
+        .filter { it.language.startsWith("es") }
+        .sortedBy { it.name }
+        .map { SpeechVoice(it.identifier, "${it.name} (${it.language})") }   // en iOS todas son locales
+
+    override suspend fun activeVoice(): SpeechVoice? {
+        val v = voiceId?.let { AVSpeechSynthesisVoice.voiceWithIdentifier(it) } ?: AVSpeechSynthesisVoice.voiceWithLanguage("es-ES")
+        return v?.let { SpeechVoice(it.identifier, "${it.name} (${it.language})") }
+    }
 
     override fun setVoice(id: String?) { voiceId = id }
 

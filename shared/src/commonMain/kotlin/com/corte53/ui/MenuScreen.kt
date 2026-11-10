@@ -59,7 +59,7 @@ private fun NumberSelect(value: Int, onSelect: (Int) -> Unit, modifier: Modifier
 fun MenuScreen(
     s: MenuSettings, onChange: (MenuSettings) -> Unit,
     onStart: () -> Unit, onListen: () -> Unit, onCuts: () -> Unit, onSubs: () -> Unit,
-    onDeck: () -> Unit, onGloss: () -> Unit,
+    onDeck: () -> Unit, onGloss: () -> Unit, voiceSection: @Composable () -> Unit,
 ) {
     val positions = PositionFilter.positions(s.from, s.to, s.filter)
     Screen {
@@ -137,5 +137,6 @@ fun MenuScreen(
             GhostButton("Ver la baraja completa", Modifier.fillMaxWidth(), onClick = onDeck)
             GhostButton("Glosario de fórmulas", Modifier.fillMaxWidth(), onClick = onGloss)
         }
+        voiceSection()
     }
 }

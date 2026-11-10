@@ -91,7 +91,9 @@ conexión, sin cuentas; ajustes solo en local.
 - Hecho: esqueleto KMP, dominio, secuencias habladas y ajustes. Repo git local con `origin` = `Corte-53` (sin subir aún).
 - Hecho: `audio/` con `SpeechEngine` (TTS nativo: `AndroidSpeechEngine`, `IosSpeechEngine` sin compilar) y `SequenceRunner` (junta clips seguidos en una frase; textos en `ClipTexts`). Los mp3 NO se usan aún: quedan como respaldo opcional.
 - Pantallas en `shared/.../ui/` (`MenuScreen`, `TrainScreen`+`ResultScreen`, `VoiceScreens` = Escuchar/Cortes/Restas con `VoiceController`, `InfoScreens` = Baraja/Glosario, `Cards.kt` = cartas vectoriales, `Components.kt` = controles y colores `Pal`). Navegación simple en `App.kt` (`Dest`).
-- Pendiente: elegir voz en ajustes y avisar si falta la voz en español / es de red; icono; revisar detalles finos frente al HTML; comprobar iOS (sin compilar). Mp3 sin usar.
+- Voz: sección «Voz» al final del menú (`VoiceSettings.kt`): automática (prefiere voz instalada, España primero) o elegir; indica si es local o necesita internet; botón «Probar voz»; `VoiceWarning` en Escuchar/Cortes/Restas si la voz es de red o no hay voz en español. `voiceId` guardado en `AppSettings`.
+- Icono Android hecho (adaptive: fondo `#9F0311` + `drawable-nodpi/ic_launcher_foreground.png`, origen `data/icon.png`). Falta el de iOS (iOS se deja para más adelante).
+- Pendiente: revisar detalles finos frente al HTML; iOS (sin compilar, aplazado). Mp3 sin usar.
 - Confirmar nombre/paquete definitivos (hoy `Corte53` / `com.corte53`) y rama de iOS.
-- Falta el icono de la app (Android e iOS).
+- Falta el icono de iOS (`iosApp/.../AppIcon.appiconset`, 1024×1024 sin transparencia desde `data/icon.png`).
 - Validar en emulador Android; solo después, workflow de iOS (preguntar antes) y firma del `.ipa`.

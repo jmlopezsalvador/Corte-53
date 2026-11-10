@@ -57,6 +57,8 @@ data class AppSettings(
     val audio: AudioSettings = AudioSettings(),
     val cuts: CutSettings = CutSettings(),
     val subs: SubtractionSettings = SubtractionSettings(),
+    /** Id de la voz del sistema elegida; null = automática. */
+    val voiceId: String? = null,
 )
 
 /** Guarda los ajustes en el almacén de cada plataforma. Los decimales se guardan como milésimas (Long). */
@@ -97,10 +99,12 @@ class SettingsStore(private val prefs: KeyValueStore) {
                 mode = enumOr("subs.mode", s.mode),
                 think = dbl("subs.think", s.think), gap = dbl("subs.gap", s.gap), rate = dbl("subs.rate", s.rate),
             ),
+            voiceId = prefs.getString("voice.id")?.takeIf { it.isNotEmpty() },
         )
     }
 
     fun save(x: AppSettings) {
+        prefs.putString("voice.id", x.voiceId ?: "")
         with(x.menu) {
             prefs.putBoolean("menu.random", random); prefs.putString("menu.teach", teach.name)
             prefs.putLong("menu.from", from.toLong()); prefs.putLong("menu.to", to.toLong())

@@ -17,7 +17,8 @@ import kotlin.test.assertTrue
 private class FakeEngine : SpeechEngine {
     val said = mutableListOf<String>()
     var stopped = 0
-    override val voices: List<SpeechVoice> = emptyList()
+    override suspend fun loadVoices(): List<SpeechVoice> = emptyList()
+    override suspend fun activeVoice(): SpeechVoice? = null
     override fun setVoice(id: String?) {}
     override suspend fun speak(text: String, rate: Double) {
         said += text

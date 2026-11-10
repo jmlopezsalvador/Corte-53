@@ -2,6 +2,7 @@ package com.corte53
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -21,6 +22,7 @@ import com.corte53.ui.SubtractionsScreen
 import com.corte53.ui.SystemBarsEffect
 import com.corte53.ui.TrainScreen
 import com.corte53.ui.TrainSession
+import com.corte53.ui.VoiceSection
 
 private sealed interface Dest {
     data object Menu : Dest
@@ -50,6 +52,7 @@ fun Corte53Root(store: SettingsStore, speech: SpeechEngine) {
         if (p.isNotEmpty()) dest = Dest.Train(newSession(p))
     }
 
+    LaunchedEffect(settings.voiceId) { speech.setVoice(settings.voiceId) }
     SystemBarsEffect()
     MaterialTheme {
         when (val d = dest) {
@@ -57,6 +60,7 @@ fun Corte53Root(store: SettingsStore, speech: SpeechEngine) {
                 menu, { update(settings.copy(menu = it)) },
                 onStart = ::startSession, onListen = { dest = Dest.Listen }, onCuts = { dest = Dest.Cuts },
                 onSubs = { dest = Dest.Subs }, onDeck = { dest = Dest.Deck }, onGloss = { dest = Dest.Gloss },
+                voiceSection = { VoiceSection(speech, settings.voiceId) { update(settings.copy(voiceId = it)) } },
             )
             is Dest.Train -> TrainScreen(d.session, onQuit = { dest = Dest.Menu }, onFinish = { dest = Dest.Result(d.session) })
             is Dest.Result -> ResultScreen(
@@ -68,9 +72,9 @@ fun Corte53Root(store: SettingsStore, speech: SpeechEngine) {
                 },
                 onAgain = ::startSession, onMenu = { dest = Dest.Menu },
             )
-            Dest.Listen -> ListenScreen(menu, settings.audio, { update(settings.copy(audio = it)) }, speech) { dest = Dest.Menu }
-            Dest.Cuts -> CutsScreen(menu, settings.cuts, { update(settings.copy(cuts = it)) }, speech) { dest = Dest.Menu }
-            Dest.Subs -> SubtractionsScreen(settings.subs, { update(settings.copy(subs = it)) }, speech) { dest = Dest.Menu }
+            Dest.Listen -> ListenScreen(menu, settings.audio, { update(settings.copy(audio = it)) }, speech, settings.voiceId) { dest = Dest.Menu }
+            Dest.Cuts -> CutsScreen(menu, settings.cuts, { update(settings.copy(cuts = it)) }, speech, settings.voiceId) { dest = Dest.Menu }
+            Dest.Subs -> SubtractionsScreen(settings.subs, { update(settings.copy(subs = it)) }, speech, settings.voiceId) { dest = Dest.Menu }
             Dest.Deck -> DeckScreen { dest = Dest.Menu }
             Dest.Gloss -> GlossaryScreen { dest = Dest.Menu }
         }
