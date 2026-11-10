@@ -1,8 +1,6 @@
 package com.corte53.audio
 
 import kotlinx.coroutines.suspendCancellableCoroutine
-import platform.AVFAudio.AVAudioSession
-import platform.AVFAudio.AVAudioSessionCategoryPlayback
 import platform.AVFAudio.AVSpeechBoundary
 import platform.AVFAudio.AVSpeechSynthesisVoice
 import platform.AVFAudio.AVSpeechSynthesizer
@@ -11,11 +9,10 @@ import platform.AVFAudio.AVSpeechUtterance
 import platform.AVFAudio.AVSpeechUtteranceDefaultSpeechRate
 import platform.AVFAudio.AVSpeechUtteranceMaximumSpeechRate
 import platform.AVFAudio.AVSpeechUtteranceMinimumSpeechRate
-import platform.AVFAudio.setActive
 import platform.darwin.NSObject
 import kotlin.coroutines.resume
 
-/** Voz con AVSpeechSynthesizer (offline; suena con el interruptor de silencio gracias a la categoría playback). */
+/** Voz con AVSpeechSynthesizer (offline; todas las voces de iOS son locales). */
 class IosSpeechEngine : SpeechEngine {
     private val synthesizer = AVSpeechSynthesizer()
     private var voiceId: String? = null
@@ -33,11 +30,7 @@ class IosSpeechEngine : SpeechEngine {
 
     init {
         synthesizer.delegate = delegate
-        runCatching {
-            val session = AVAudioSession.sharedInstance()
-            session.setCategory(AVAudioSessionCategoryPlayback, error = null)
-            session.setActive(true, error = null)
-        }
+        // La sesión de audio (categoría playback) se configura en Swift: iOSApp.swift
     }
 
     override suspend fun loadVoices(): List<SpeechVoice> = AVSpeechSynthesisVoice.speechVoices()

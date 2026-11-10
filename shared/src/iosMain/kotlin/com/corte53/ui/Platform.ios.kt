@@ -1,7 +1,9 @@
 package com.corte53.ui
 
 import androidx.compose.runtime.Composable
+import platform.Foundation.NSNotificationCenter
 import platform.Foundation.NSUserDefaults
+import platform.UIKit.UIApplicationDidEnterBackgroundNotification
 
 // En iOS la barra de estado la gestiona SwiftUI con .preferredColorScheme; no hay nada que ajustar.
 @Composable
@@ -31,6 +33,13 @@ actual fun KeepScreenOn(on: Boolean) {
     }
 }
 
-// Pendiente al retomar iOS: observar UIApplicationDidEnterBackgroundNotification.
 @Composable
-actual fun OnAppStopped(onStopped: () -> Unit) {}
+actual fun OnAppStopped(onStopped: () -> Unit) {
+    val current = androidx.compose.runtime.rememberUpdatedState(onStopped)
+    androidx.compose.runtime.DisposableEffect(Unit) {
+        val observer = NSNotificationCenter.defaultCenter.addObserverForName(
+            UIApplicationDidEnterBackgroundNotification, null, null,
+        ) { _ -> current.value() }
+        onDispose { NSNotificationCenter.defaultCenter.removeObserver(observer) }
+    }
+}
