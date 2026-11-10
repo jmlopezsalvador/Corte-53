@@ -89,7 +89,8 @@ conexión, sin cuentas; ajustes solo en local.
 
 ## Pendiente
 - Hecho: esqueleto KMP, dominio, secuencias habladas y ajustes. Repo git local con `origin` = `Corte-53` (sin subir aún).
-- Siguiente: `ClipPlayer` + `SequenceRunner` (expect/actual de audio, copiar `audio/` a recursos) y las pantallas en el orden de arriba.
+- Hecho: `audio/` con `SpeechEngine` (TTS nativo: `AndroidSpeechEngine`, `IosSpeechEngine` sin compilar) y `SequenceRunner` (junta clips seguidos en una frase; textos en `ClipTexts`). Los mp3 NO se usan aún: quedan como respaldo opcional.
+- Siguiente: pantallas en el orden de arriba; la App actual tiene un botón temporal «Probar voz» (quitarlo con Cortes). Pendiente: elegir voz en ajustes y avisar si falta la voz en español.
 - Confirmar nombre/paquete definitivos (hoy `Corte53` / `com.corte53`) y rama de iOS.
 - Falta el icono de la app (Android e iOS).
 - Validar en emulador Android; solo después, workflow de iOS (preguntar antes) y firma del `.ipa`.

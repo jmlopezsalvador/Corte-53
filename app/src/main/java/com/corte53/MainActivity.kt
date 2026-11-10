@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import com.corte53.audio.AndroidSpeechEngine
 import com.corte53.ui.SettingsStore
 import com.corte53.ui.SharedPrefsStore
 
@@ -17,6 +18,7 @@ class MainActivity : ComponentActivity() {
         )
         super.onCreate(savedInstanceState)
         val store = SettingsStore(SharedPrefsStore(applicationContext))
-        setContent { Corte53Root(store) }
+        val speech = AndroidSpeechEngine(applicationContext)
+        setContent { Corte53Root(store, speech) }
     }
 }
