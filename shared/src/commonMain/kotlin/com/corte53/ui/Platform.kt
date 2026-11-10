@@ -17,3 +17,11 @@ interface KeyValueStore {
     fun putBoolean(key: String, value: Boolean)
     fun putLong(key: String, value: Long)
 }
+
+/** Atrás del sistema (Android). En iOS no hace nada: la navegación va con los botones de la app. */
+@Composable
+expect fun PlatformBackHandler(enabled: Boolean, onBack: () -> Unit)
+
+/** Mantiene la pantalla encendida mientras [on] es true (mientras suena la voz). */
+@Composable
+expect fun KeepScreenOn(on: Boolean)

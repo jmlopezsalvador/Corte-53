@@ -4,7 +4,7 @@ App móvil para **Android y iOS** con un único código en Kotlin Multiplatform 
 El usuario habla español: responde y comenta el código en español.
 
 > **Estado:** esqueleto KMP creado y compilando en Android (`com.corte53`); capa `domain/` + `SettingsStore` hechos con 11 tests
-> en verde; la UI es solo un marcador de posición. Es un **refactor** del entrenador web
+> en verde; las 8 pantallas hechas y probadas en el emulador (Menú, Entrenamiento+Resultado, Escuchar, Cortes, Restas, Baraja, Glosario). Es un **refactor** del entrenador web
 > «Mnemónica» (un HTML de un solo archivo) a app nativa. Repo: https://github.com/jmlopezsalvador/Corte-53.git
 > La fuente de verdad funcional es la carpeta **`mnemonica-contexto/`**.
 
@@ -90,7 +90,8 @@ conexión, sin cuentas; ajustes solo en local.
 ## Pendiente
 - Hecho: esqueleto KMP, dominio, secuencias habladas y ajustes. Repo git local con `origin` = `Corte-53` (sin subir aún).
 - Hecho: `audio/` con `SpeechEngine` (TTS nativo: `AndroidSpeechEngine`, `IosSpeechEngine` sin compilar) y `SequenceRunner` (junta clips seguidos en una frase; textos en `ClipTexts`). Los mp3 NO se usan aún: quedan como respaldo opcional.
-- Siguiente: pantallas en el orden de arriba; la App actual tiene un botón temporal «Probar voz» (quitarlo con Cortes). Pendiente: elegir voz en ajustes y avisar si falta la voz en español.
+- Pantallas en `shared/.../ui/` (`MenuScreen`, `TrainScreen`+`ResultScreen`, `VoiceScreens` = Escuchar/Cortes/Restas con `VoiceController`, `InfoScreens` = Baraja/Glosario, `Cards.kt` = cartas vectoriales, `Components.kt` = controles y colores `Pal`). Navegación simple en `App.kt` (`Dest`).
+- Pendiente: elegir voz en ajustes y avisar si falta la voz en español / es de red; icono; revisar detalles finos frente al HTML; comprobar iOS (sin compilar). Mp3 sin usar.
 - Confirmar nombre/paquete definitivos (hoy `Corte53` / `com.corte53`) y rama de iOS.
 - Falta el icono de la app (Android e iOS).
 - Validar en emulador Android; solo después, workflow de iOS (preguntar antes) y firma del `.ipa`.

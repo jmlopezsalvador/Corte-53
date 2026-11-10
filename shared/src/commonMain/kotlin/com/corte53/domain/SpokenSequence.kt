@@ -9,7 +9,8 @@ sealed interface Step {
 
 /** Generadores de la lista de pasos de cada modo (sin audio: se testean como datos). */
 object SpokenSequence {
-    private const val TIGHT = 0.05   // entre clips de una misma frase
+    /** Pausa entre clips de una misma frase: el [com.corte53.audio.SequenceRunner] los junta en una locución. */
+    const val TIGHT = 0.05
 
     fun n(x: Int) = Step.Clip("n$x")
     fun c(card: Card) = Step.Clip("c${card.code}")

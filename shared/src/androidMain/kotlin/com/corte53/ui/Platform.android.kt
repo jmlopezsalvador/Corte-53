@@ -28,3 +28,17 @@ class SharedPrefsStore(context: Context) : KeyValueStore {
     override fun putBoolean(key: String, value: Boolean) = prefs.edit().putBoolean(key, value).apply()
     override fun putLong(key: String, value: Long) = prefs.edit().putLong(key, value).apply()
 }
+
+@Composable
+actual fun PlatformBackHandler(enabled: Boolean, onBack: () -> Unit) {
+    androidx.activity.compose.BackHandler(enabled = enabled, onBack = onBack)
+}
+
+@Composable
+actual fun KeepScreenOn(on: Boolean) {
+    val view = androidx.compose.ui.platform.LocalView.current
+    androidx.compose.runtime.DisposableEffect(on) {
+        view.keepScreenOn = on
+        onDispose { view.keepScreenOn = false }
+    }
+}

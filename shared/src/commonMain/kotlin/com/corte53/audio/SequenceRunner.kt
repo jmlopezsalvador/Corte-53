@@ -1,12 +1,13 @@
 package com.corte53.audio
 
+import com.corte53.domain.SpokenSequence
 import com.corte53.domain.Step
 import kotlinx.coroutines.delay
 
 /**
  * Ejecuta una lista de [Step] con un [SpeechEngine]. Único motor para Escuchar, Cortes y Restas.
  *
- * - Los clips seguidos con pausas cortas (≤ [PHRASE_GAP]) se juntan en UNA frase hablada, para que
+ * - Los clips seguidos separados por [SpokenSequence.TIGHT] se juntan en UNA frase hablada, para que
  *   la entonación sea natural («cuarenta y ocho menos tres es cuarenta y cinco»).
  * - Las pausas largas son esperas reales; los [Step.Visual] llaman a [onVisual].
  * - Cancelar la corrutina que lo ejecuta corta la voz y las esperas (cancelación estructurada).
@@ -28,7 +29,7 @@ class SequenceRunner(
         for (step in steps) {
             when (step) {
                 is Step.Clip -> phrase += textOf(step.key)
-                is Step.Pause -> if (step.seconds > PHRASE_GAP) {
+                is Step.Pause -> if (step.seconds != SpokenSequence.TIGHT) {
                     flush()
                     delay((step.seconds * 1000).toLong())
                 }
@@ -39,10 +40,5 @@ class SequenceRunner(
             }
         }
         flush()
-    }
-
-    companion object {
-        /** Pausas de este tamaño o menores no cortan la frase. */
-        const val PHRASE_GAP = 0.05
     }
 }

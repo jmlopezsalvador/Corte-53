@@ -19,3 +19,14 @@ class UserDefaultsStore : KeyValueStore {
     override fun putBoolean(key: String, value: Boolean) = defaults.setBool(value, forKey = key)
     override fun putLong(key: String, value: Long) = defaults.setInteger(value, forKey = key)
 }
+
+@Composable
+actual fun PlatformBackHandler(enabled: Boolean, onBack: () -> Unit) {}
+
+@Composable
+actual fun KeepScreenOn(on: Boolean) {
+    androidx.compose.runtime.DisposableEffect(on) {
+        platform.UIKit.UIApplication.sharedApplication.idleTimerDisabled = on
+        onDispose { platform.UIKit.UIApplication.sharedApplication.idleTimerDisabled = false }
+    }
+}

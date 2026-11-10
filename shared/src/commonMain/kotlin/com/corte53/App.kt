@@ -1,70 +1,78 @@
 package com.corte53
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.safeDrawingPadding
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.corte53.audio.SequenceRunner
 import com.corte53.audio.SpeechEngine
-import com.corte53.audio.SpeechException
-import com.corte53.domain.CutCalculator
-import com.corte53.domain.SpokenSequence
+import com.corte53.domain.PositionFilter
+import com.corte53.domain.SessionBuilder
+import com.corte53.ui.AppSettings
+import com.corte53.ui.CutsScreen
+import com.corte53.ui.DeckScreen
+import com.corte53.ui.GlossaryScreen
+import com.corte53.ui.ListenScreen
+import com.corte53.ui.MenuScreen
+import com.corte53.ui.ResultScreen
 import com.corte53.ui.SettingsStore
+import com.corte53.ui.SubtractionsScreen
 import com.corte53.ui.SystemBarsEffect
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import com.corte53.ui.TrainScreen
+import com.corte53.ui.TrainSession
 
-/** Raíz común a las dos plataformas: carga los ajustes, los guarda al cambiarlos y pinta la app. */
+private sealed interface Dest {
+    data object Menu : Dest
+    data class Train(val session: TrainSession) : Dest
+    data class Result(val session: TrainSession) : Dest
+    data object Listen : Dest
+    data object Cuts : Dest
+    data object Subs : Dest
+    data object Deck : Dest
+    data object Gloss : Dest
+}
+
+/** Raíz común a las dos plataformas: carga los ajustes, los guarda al cambiarlos y navega entre pantallas. */
 @Composable
 fun Corte53Root(store: SettingsStore, speech: SpeechEngine) {
-    @Suppress("UNUSED_VARIABLE")
     var settings by remember { mutableStateOf(store.load()) }
+    var dest by remember { mutableStateOf<Dest>(Dest.Menu) }
+    fun update(s: AppSettings) { settings = s; store.save(s) }
+    val menu = settings.menu
+
+    fun newSession(positions: List<Int>): TrainSession {
+        val list = SessionBuilder.list(positions, menu.random)
+        return TrainSession(list, SessionBuilder.directions(list.size, menu.teach))
+    }
+    fun startSession() {
+        val p = PositionFilter.positions(menu.from, menu.to, menu.filter)
+        if (p.isNotEmpty()) dest = Dest.Train(newSession(p))
+    }
+
     SystemBarsEffect()
     MaterialTheme {
-        // Marcador de posición: las pantallas se irán añadiendo según 01-FUNCIONALIDADES.md.
-        // El botón es una prueba temporal de la voz del sistema (se quitará con la pantalla de Cortes).
-        val scope = rememberCoroutineScope()
-        val runner = remember(speech) { SequenceRunner(speech) }
-        var job by remember { mutableStateOf<Job?>(null) }
-        var message by remember { mutableStateOf("") }
-        Column(
-            Modifier.fillMaxSize().background(Color(0xFF0F3D2E)).safeDrawingPadding(),
-            verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Text("Mnemónica", color = Color(0xFFF3EFE3), fontSize = 40.sp, fontFamily = FontFamily.Serif)
-            Button(onClick = {
-                job?.cancel()
-                message = ""
-                job = scope.launch {
-                    try {
-                        val cut = CutCalculator.cutFor(3, 48)
-                        runner.run(SpokenSequence.cutFull(cut, think = 2.0, step = 0.75), rate = 1.0) { message = it }
-                    } catch (e: CancellationException) {
-                        throw e
-                    } catch (e: SpeechException) {
-                        message = e.message ?: "Error de voz"
-                    }
-                }
-            }) { Text("Probar voz (corte 3 → 48)") }
-            Text(message, color = Color(0xFFB7C8BE))
+        when (val d = dest) {
+            Dest.Menu -> MenuScreen(
+                menu, { update(settings.copy(menu = it)) },
+                onStart = ::startSession, onListen = { dest = Dest.Listen }, onCuts = { dest = Dest.Cuts },
+                onSubs = { dest = Dest.Subs }, onDeck = { dest = Dest.Deck }, onGloss = { dest = Dest.Gloss },
+            )
+            is Dest.Train -> TrainScreen(d.session, onQuit = { dest = Dest.Menu }, onFinish = { dest = Dest.Result(d.session) })
+            is Dest.Result -> ResultScreen(
+                d.session,
+                onRetryFails = {
+                    val fails = d.session.list.filterIndexed { k, _ -> d.session.res[k] == false }
+                    // barajadas si el orden es aleatorio; si no, por posición
+                    dest = Dest.Train(newSession(if (menu.random) fails else fails.sorted()))
+                },
+                onAgain = ::startSession, onMenu = { dest = Dest.Menu },
+            )
+            Dest.Listen -> ListenScreen(menu, settings.audio, { update(settings.copy(audio = it)) }, speech) { dest = Dest.Menu }
+            Dest.Cuts -> CutsScreen(menu, settings.cuts, { update(settings.copy(cuts = it)) }, speech) { dest = Dest.Menu }
+            Dest.Subs -> SubtractionsScreen(settings.subs, { update(settings.copy(subs = it)) }, speech) { dest = Dest.Menu }
+            Dest.Deck -> DeckScreen { dest = Dest.Menu }
+            Dest.Gloss -> GlossaryScreen { dest = Dest.Menu }
         }
     }
 }
