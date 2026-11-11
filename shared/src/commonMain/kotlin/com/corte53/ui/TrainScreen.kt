@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -12,7 +13,6 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -79,18 +79,18 @@ fun TrainScreen(session: TrainSession, onQuit: () -> Unit, onFinish: () -> Unit)
     PlatformBackHandler(true, onQuit)
 
     Screen(scroll = false) {
-        TopBar(
-            "✕ Salir", onQuit,
-            center = { Text("${i + 1} / $total", color = Pal.Ink, fontWeight = FontWeight.Bold) },
-            right = {
-                Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    Text("✓ $ok", color = Pal.Green, fontWeight = FontWeight.Bold)
-                    Text("✗ $ko", color = Pal.Salmon, fontWeight = FontWeight.Bold)
+        Row(Modifier.fillMaxWidth().height(60.dp), verticalAlignment = Alignment.CenterVertically) {
+            IconBtn(Ic.Close, "Salir", onQuit)
+            Column(Modifier.weight(1f).padding(horizontal = 8.dp)) {
+                Text("${i + 1} de $total", color = Pal.CreamDim, fontSize = 13.sp)
+                Box(Modifier.padding(top = 6.dp).fillMaxWidth().height(4.dp).background(Pal.Line, RoundedCornerShape(4.dp))) {
+                    Box(Modifier.fillMaxWidth(i.toFloat() / total).fillMaxHeight().background(Pal.Cream, RoundedCornerShape(4.dp)))
                 }
-            },
-        )
-        Box(Modifier.fillMaxWidth().padding(top = 10.dp).height(4.dp).background(Color(0x4D000000), RoundedCornerShape(4.dp))) {
-            Box(Modifier.fillMaxWidth(i.toFloat() / total).fillMaxHeight().background(Pal.Gold))
+            }
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.padding(start = 4.dp)) {
+                Text("✓ $ok", color = Pal.Green, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                Text("✗ $ko", color = Pal.Salmon, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+            }
         }
 
         val swipe = with(LocalDensity.current) { 50.dp.toPx() }
@@ -106,7 +106,7 @@ fun TrainScreen(session: TrainSession, onQuit: () -> Unit, onFinish: () -> Unit)
             contentAlignment = Alignment.Center,
         ) {
             val w: Dp = minOf(maxWidth * 0.64f, 250.dp, (maxHeight - 40.dp) / 1.4f)
-            Box(Modifier.clickable(indication = null, interactionSource = remember { androidx.compose.foundation.interaction.MutableInteractionSource() }) { toggle() }) {
+            Box(Modifier.clickable(indication = null, interactionSource = remember { MutableInteractionSource() }) { toggle() }) {
                 if (dir == Direction.NUMBER_TO_CARD) {
                     FlipCard(flipped, w, front = { CardBack(pos, w) }, back = { BigCard(pos, w, badgeVisible = true) })
                 } else {
@@ -116,24 +116,25 @@ fun TrainScreen(session: TrainSession, onQuit: () -> Unit, onFinish: () -> Unit)
             }
         }
 
-        val info = when (mark) { true -> " · marcada ✓"; false -> " · marcada ✗"; null -> "" }
-        Tip(
+        val info = when (mark) { true -> ", marcada ✓"; false -> ", marcada ✗"; null -> "" }
+        Text(
             (if (revealed) "¿Lo sabías?" else if (dir == Direction.NUMBER_TO_CARD) "¿Qué carta está en esta posición?" else "¿En qué posición está esta carta?") + info,
+            color = Pal.CreamDim, fontSize = 16.sp, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth().padding(bottom = 14.dp),
         )
         Row(Modifier.fillMaxWidth().alpha(if (revealed) 1f else 0f), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             @Composable
             fun Mark(text: String, color: Color, chosen: Boolean, mod: Modifier, onClick: () -> Unit) = Box(
-                mod.background(color, RoundedCornerShape(14.dp))
-                    .then(if (chosen) Modifier.border(3.dp, Pal.Ink, RoundedCornerShape(14.dp)) else Modifier)
-                    .clickable(enabled = revealed, onClick = onClick).padding(17.dp),
+                mod.height(56.dp).background(color, RoundedCornerShape(16.dp))
+                    .then(if (chosen) Modifier.border(3.dp, Pal.Cream, RoundedCornerShape(16.dp)) else Modifier)
+                    .clickable(enabled = revealed, onClick = onClick),
                 contentAlignment = Alignment.Center,
-            ) { Text(text, color = Color.White, fontSize = 16.8.sp, fontWeight = FontWeight.Bold) }
+            ) { Text(text, color = Color.White, fontSize = 17.sp, fontWeight = FontWeight.Bold) }
             Mark("✗ Fallé", Pal.Ko, mark == false, Modifier.weight(1f)) { answer(false) }
             Mark("✓ Acerté", Pal.Ok, mark == true, Modifier.weight(1f)) { answer(true) }
         }
-        Row(Modifier.fillMaxWidth().padding(top = 12.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            GhostButton("‹ Anterior", Modifier.weight(1f), enabled = i > 0, fontSize = 16f) { go(-1) }
-            GhostButton(if (i == total - 1) "Terminar ›" else "Siguiente ›", Modifier.weight(1f), fontSize = 16f) { go(1) }
+        Row(Modifier.fillMaxWidth().padding(top = 12.dp, bottom = 16.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            SecondaryButton("Anterior", Modifier.weight(1f), enabled = i > 0) { go(-1) }
+            SecondaryButton(if (i == total - 1) "Terminar" else "Siguiente", Modifier.weight(1f)) { go(1) }
         }
     }
 }
@@ -151,41 +152,42 @@ fun ResultScreen(session: TrainSession, onRetryFails: () -> Unit, onAgain: () ->
     PlatformBackHandler(true, onMenu)
 
     Screen {
-        Column(Modifier.fillMaxWidth().padding(top = 28.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-            Text("SESIÓN TERMINADA", color = Pal.Muted, fontSize = 12.sp, letterSpacing = 0.15.sp)
+        Column(Modifier.fillMaxWidth().padding(top = 56.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+            Text("Sesión terminada", color = Pal.CreamDim, fontSize = 16.sp)
             Text(
-                if (marked > 0) "$ok / $marked" else "$total ${if (total == 1) "carta" else "cartas"}",
-                color = Pal.Ink, fontFamily = Serif, fontSize = 54.sp, modifier = Modifier.padding(top = 10.dp),
+                if (marked > 0) "$ok de $marked" else "$total ${if (total == 1) "carta" else "cartas"}",
+                color = Pal.Cream, fontFamily = Serif, fontSize = 60.sp, modifier = Modifier.padding(top = 10.dp),
             )
             Text(
-                if (marked > 0) "${(ok * 100f / marked).let { kotlin.math.round(it).toInt() }}% de aciertos · $clock min" +
-                    (if (skipped > 0) " · $skipped sin marcar" else "")
-                else "Recorrido sin marcar · $clock min",
-                color = Pal.Muted, modifier = Modifier.padding(top = 4.dp), textAlign = TextAlign.Center,
+                if (marked > 0) "${kotlin.math.round(ok * 100f / marked).toInt()}% de aciertos en $clock min" +
+                    (if (skipped > 0) ", $skipped sin marcar" else "")
+                else "Recorrido sin marcar, $clock min",
+                color = Pal.CreamDim, fontSize = 16.sp, modifier = Modifier.padding(top = 6.dp), textAlign = TextAlign.Center,
             )
         }
         if (fails.isNotEmpty()) {
-            Label("Para repasar")
+            SectionTitle("Para repasar")
             FlowRow(
-                Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+                Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 fails.forEach { p ->
                     val c = MnemonicaStack.cardAt(p)
                     Row(
-                        Modifier.background(Pal.Paper, RoundedCornerShape(8.dp)).padding(horizontal = 10.dp, vertical = 6.dp),
-                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                        Modifier.background(Pal.Paper, RoundedCornerShape(10.dp)).padding(horizontal = 12.dp, vertical = 8.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
-                        Text(p.toString(), color = Pal.Felt, fontWeight = FontWeight.Bold, fontSize = 15.2.sp)
-                        Text(c.shortName, color = if (c.suit.red) Pal.Red else Pal.Black, fontWeight = FontWeight.Bold, fontSize = 15.2.sp)
+                        Text(p.toString(), color = Pal.Red, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                        Text(c.shortName, color = if (c.suit.red) Pal.RedHi else Pal.Black, fontWeight = FontWeight.Bold, fontSize = 16.sp)
                     }
                 }
             }
         } else if (marked > 0) {
-            Text("¡Sin fallos! 🎩", color = Pal.Muted, fontSize = 17.6.sp, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth().padding(top = 24.dp))
+            Text("¡Sin fallos! 🎩", color = Pal.CreamDim, fontSize = 18.sp, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth().padding(top = 28.dp))
         }
-        if (fails.isNotEmpty()) PrimaryButton("Repasar fallos", Modifier.padding(top = 28.dp), onClick = onRetryFails)
-        GhostButton("Repetir sesión", Modifier.fillMaxWidth().padding(top = 10.dp), onClick = onAgain)
-        GhostButton("Menú", Modifier.fillMaxWidth().padding(top = 10.dp), onClick = onMenu)
+        Column(Modifier.padding(top = 32.dp, bottom = 24.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            if (fails.isNotEmpty()) PrimaryButton("Repasar fallos", onClick = onRetryFails)
+            if (fails.isEmpty()) PrimaryButton("Repetir sesión", onClick = onAgain) else SecondaryButton("Repetir sesión", onClick = onAgain)
+            SecondaryButton("Volver", onClick = onMenu)
+        }
     }
 }

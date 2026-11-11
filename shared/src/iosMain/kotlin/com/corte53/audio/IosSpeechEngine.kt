@@ -9,6 +9,9 @@ import platform.AVFAudio.AVSpeechUtterance
 import platform.AVFAudio.AVSpeechUtteranceDefaultSpeechRate
 import platform.AVFAudio.AVSpeechUtteranceMaximumSpeechRate
 import platform.AVFAudio.AVSpeechUtteranceMinimumSpeechRate
+import platform.Foundation.NSLocale
+import platform.Foundation.countryCode
+import platform.Foundation.currentLocale
 import platform.darwin.NSObject
 import kotlin.coroutines.resume
 
@@ -33,21 +36,27 @@ class IosSpeechEngine : SpeechEngine {
         // La sesión de audio (categoría playback) se configura en Swift: iOSApp.swift
     }
 
-    override suspend fun loadVoices(): List<SpeechVoice> = AVSpeechSynthesisVoice.speechVoices()
-        .filterIsInstance<AVSpeechSynthesisVoice>()
-        .filter { it.language.startsWith("es") }
-        .sortedBy { it.name }
-        .map { SpeechVoice(it.identifier, "${it.name} (${it.language})") }   // en iOS todas son locales
+    /** Voces en español del país del dispositivo (si no hay, todas las españolas). En iOS todas son locales. */
+    private fun candidates(): List<AVSpeechSynthesisVoice> {
+        val all = AVSpeechSynthesisVoice.speechVoices().filterIsInstance<AVSpeechSynthesisVoice>().filter { it.language.startsWith("es") }
+        val country = NSLocale.currentLocale.countryCode
+        val byCountry = all.filter { it.language.endsWith("-$country") }.ifEmpty { all }
+        return byCountry.sortedBy { it.name }
+    }
+
+    override suspend fun loadVoices(): List<SpeechVoice> = candidates().map { SpeechVoice(it.identifier, it.name) }
 
     override suspend fun activeVoice(): SpeechVoice? {
-        val v = voiceId?.let { AVSpeechSynthesisVoice.voiceWithIdentifier(it) } ?: AVSpeechSynthesisVoice.voiceWithLanguage("es-ES")
-        return v?.let { SpeechVoice(it.identifier, "${it.name} (${it.language})") }
+        val v = voiceId?.let { AVSpeechSynthesisVoice.voiceWithIdentifier(it) } ?: candidates().firstOrNull()
+            ?: AVSpeechSynthesisVoice.voiceWithLanguage("es-ES")
+        return v?.let { SpeechVoice(it.identifier, it.name) }
     }
 
     override fun setVoice(id: String?) { voiceId = id }
 
     override suspend fun speak(text: String, rate: Double) {
         val voice = voiceId?.let { AVSpeechSynthesisVoice.voiceWithIdentifier(it) }
+            ?: candidates().firstOrNull()
             ?: AVSpeechSynthesisVoice.voiceWithLanguage("es-ES")
             ?: throw SpeechException("Falta la voz en español: instálala en Ajustes → Accesibilidad → Contenido hablado")
         val utterance = AVSpeechUtterance.speechUtteranceWithString(text)

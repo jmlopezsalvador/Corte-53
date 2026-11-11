@@ -96,7 +96,7 @@ fun PlayingCard(card: Card, w: Dp, modifier: Modifier = Modifier) {
                     .size(w * 0.62f, h * 0.68f)
                     .border(em * 0.08f, color, RoundedCornerShape(em * 0.4f))
                     .background(
-                        Brush.linearGradient(listOf(Pal.Gold.copy(alpha = 0.25f), Pal.Gold.copy(alpha = 0.06f))),
+                        Brush.linearGradient(listOf(Pal.RedHi.copy(alpha = 0.14f), Pal.RedHi.copy(alpha = 0.03f))),
                         RoundedCornerShape(em * 0.4f),
                     ),
                 horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center,
@@ -124,9 +124,9 @@ fun CardBack(position: Int, w: Dp, modifier: Modifier = Modifier) {
     Box(modifier.size(w, w * 1.4f).shadow(6.dp, shape).clip(shape).background(Pal.Paper)) {
         val inner = RoundedCornerShape(em * 0.5f)
         Canvas(
-            Modifier.padding(em * 0.45f).size(w - em * 0.9f, w * 1.4f - em * 0.9f).clip(inner).background(Pal.Back),
+            Modifier.padding(em * 0.45f).size(w - em * 0.9f, w * 1.4f - em * 0.9f).clip(inner).background(Pal.Red),
         ) {
-            val stripe = Color.White.copy(alpha = 0.13f)
+            val stripe = Pal.Cream.copy(alpha = 0.16f)
             val step = size.width * 0.048f
             val sw = size.width * 0.008f
             var x = -size.height
@@ -138,13 +138,13 @@ fun CardBack(position: Int, w: Dp, modifier: Modifier = Modifier) {
         }
         Box(
             Modifier.padding(em * 0.45f).size(w - em * 0.9f, w * 1.4f - em * 0.9f)
-                .border(em * 0.12f, Pal.Gold, inner),
+                .border(em * 0.12f, Pal.Cream, inner),
         )
         Box(
             Modifier.align(Alignment.Center).size(em * 6.08f)
-                .background(Pal.Paper, CircleShape).border(em * 0.07f, Pal.Gold, CircleShape),
+                .background(Pal.Paper, CircleShape).border(em * 0.07f, Pal.Cream, CircleShape),
             contentAlignment = Alignment.Center,
-        ) { Glyph(position.toString(), em * 3.2f, Pal.Felt, bold = true) }
+        ) { Glyph(position.toString(), em * 3.2f, Pal.Red, bold = true) }
     }
 }
 
@@ -157,7 +157,7 @@ fun PositionBadge(position: Int, w: Dp, visible: Boolean = true, modifier: Modif
     )
     Box(
         modifier.size(w * 0.28f).graphicsLayer { this.alpha = alpha; scaleX = scale; scaleY = scale }
-            .shadow(3.dp, CircleShape).background(Pal.Badge, CircleShape).border(w * 0.015f, Pal.Felt, CircleShape),
+            .shadow(3.dp, CircleShape).background(Pal.Badge, CircleShape).border(w * 0.015f, Pal.Wine, CircleShape),
         contentAlignment = Alignment.Center,
     ) { Glyph(position.toString(), w * 0.14f, Color.White, bold = true, serif = false) }
 }

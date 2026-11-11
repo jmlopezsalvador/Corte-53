@@ -11,35 +11,38 @@ import com.corte53.audio.SpeechEngine
 import com.corte53.domain.PositionFilter
 import com.corte53.domain.SessionBuilder
 import com.corte53.ui.AppSettings
+import com.corte53.ui.BottomBar
 import com.corte53.ui.CutsScreen
-import com.corte53.ui.DeckScreen
-import com.corte53.ui.GlossaryScreen
+import com.corte53.ui.LearnTab
+import com.corte53.ui.LibraryTab
 import com.corte53.ui.ListenScreen
-import com.corte53.ui.MenuScreen
+import com.corte53.ui.PlatformBackHandler
+import com.corte53.ui.PracticeTab
 import com.corte53.ui.ResultScreen
+import com.corte53.ui.Screen
 import com.corte53.ui.SettingsStore
+import com.corte53.ui.SettingsTab
 import com.corte53.ui.SubtractionsScreen
 import com.corte53.ui.SystemBarsEffect
+import com.corte53.ui.Tab
 import com.corte53.ui.TrainScreen
 import com.corte53.ui.TrainSession
-import com.corte53.ui.VoiceSection
 
-private sealed interface Dest {
-    data object Menu : Dest
-    data class Train(val session: TrainSession) : Dest
-    data class Result(val session: TrainSession) : Dest
-    data object Listen : Dest
-    data object Cuts : Dest
-    data object Subs : Dest
-    data object Deck : Dest
-    data object Gloss : Dest
+/** Pantallas a pantalla completa por encima de las pestañas. */
+private sealed interface Overlay {
+    data class Train(val session: TrainSession) : Overlay
+    data class Result(val session: TrainSession) : Overlay
+    data object Listen : Overlay
+    data object Cuts : Overlay
+    data object Subs : Overlay
 }
 
-/** Raíz común a las dos plataformas: carga los ajustes, los guarda al cambiarlos y navega entre pantallas. */
+/** Raíz común a las dos plataformas: carga los ajustes, los guarda al cambiarlos y navega entre pestañas y pantallas. */
 @Composable
 fun Corte53Root(store: SettingsStore, speech: SpeechEngine) {
     var settings by remember { mutableStateOf(store.load()) }
-    var dest by remember { mutableStateOf<Dest>(Dest.Menu) }
+    var tab by remember { mutableStateOf(Tab.Learn) }
+    var overlay by remember { mutableStateOf<Overlay?>(null) }
     fun update(s: AppSettings) { settings = s; store.save(s) }
     val menu = settings.menu
 
@@ -49,34 +52,41 @@ fun Corte53Root(store: SettingsStore, speech: SpeechEngine) {
     }
     fun startSession() {
         val p = PositionFilter.positions(menu.from, menu.to, menu.filter)
-        if (p.isNotEmpty()) dest = Dest.Train(newSession(p))
+        if (p.isNotEmpty()) overlay = Overlay.Train(newSession(p))
     }
 
     LaunchedEffect(settings.voiceId) { speech.setVoice(settings.voiceId) }
     SystemBarsEffect()
     MaterialTheme {
-        when (val d = dest) {
-            Dest.Menu -> MenuScreen(
-                menu, { update(settings.copy(menu = it)) },
-                onStart = ::startSession, onListen = { dest = Dest.Listen }, onCuts = { dest = Dest.Cuts },
-                onSubs = { dest = Dest.Subs }, onDeck = { dest = Dest.Deck }, onGloss = { dest = Dest.Gloss },
-                voiceSection = { VoiceSection(speech, settings.voiceId) { update(settings.copy(voiceId = it)) } },
-            )
-            is Dest.Train -> TrainScreen(d.session, onQuit = { dest = Dest.Menu }, onFinish = { dest = Dest.Result(d.session) })
-            is Dest.Result -> ResultScreen(
-                d.session,
+        when (val o = overlay) {
+            null -> {
+                // desde cualquier pestaña, atrás lleva a Memorizar; desde Memorizar sale de la app
+                PlatformBackHandler(tab != Tab.Learn) { tab = Tab.Learn }
+                Screen(scroll = tab != Tab.Library, bottomBar = { BottomBar(tab) { tab = it } }) {
+                    when (tab) {
+                        Tab.Learn -> LearnTab(
+                            menu, { update(settings.copy(menu = it)) },
+                            onStart = ::startSession, onListen = { overlay = Overlay.Listen },
+                        )
+                        Tab.Practice -> PracticeTab(onCuts = { overlay = Overlay.Cuts }, onSubs = { overlay = Overlay.Subs })
+                        Tab.Library -> LibraryTab()
+                        Tab.Settings -> SettingsTab(speech, settings.voiceId) { update(settings.copy(voiceId = it)) }
+                    }
+                }
+            }
+            is Overlay.Train -> TrainScreen(o.session, onQuit = { overlay = null }, onFinish = { overlay = Overlay.Result(o.session) })
+            is Overlay.Result -> ResultScreen(
+                o.session,
                 onRetryFails = {
-                    val fails = d.session.list.filterIndexed { k, _ -> d.session.res[k] == false }
+                    val fails = o.session.list.filterIndexed { k, _ -> o.session.res[k] == false }
                     // barajadas si el orden es aleatorio; si no, por posición
-                    dest = Dest.Train(newSession(if (menu.random) fails else fails.sorted()))
+                    overlay = Overlay.Train(newSession(if (menu.random) fails else fails.sorted()))
                 },
-                onAgain = ::startSession, onMenu = { dest = Dest.Menu },
+                onAgain = ::startSession, onMenu = { overlay = null },
             )
-            Dest.Listen -> ListenScreen(menu, settings.audio, { update(settings.copy(audio = it)) }, speech, settings.voiceId) { dest = Dest.Menu }
-            Dest.Cuts -> CutsScreen(menu, settings.cuts, { update(settings.copy(cuts = it)) }, speech, settings.voiceId) { dest = Dest.Menu }
-            Dest.Subs -> SubtractionsScreen(settings.subs, { update(settings.copy(subs = it)) }, speech, settings.voiceId) { dest = Dest.Menu }
-            Dest.Deck -> DeckScreen { dest = Dest.Menu }
-            Dest.Gloss -> GlossaryScreen { dest = Dest.Menu }
+            Overlay.Listen -> ListenScreen(menu, settings.audio, { update(settings.copy(audio = it)) }, speech, settings.voiceId) { overlay = null }
+            Overlay.Cuts -> CutsScreen(menu, settings.cuts, { update(settings.copy(cuts = it)) }, speech, settings.voiceId) { overlay = null }
+            Overlay.Subs -> SubtractionsScreen(settings.subs, { update(settings.copy(subs = it)) }, speech, settings.voiceId) { overlay = null }
         }
     }
 }

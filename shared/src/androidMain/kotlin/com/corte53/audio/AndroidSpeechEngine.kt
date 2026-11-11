@@ -42,20 +42,27 @@ class AndroidSpeechEngine(context: Context) : SpeechEngine {
         tts.voices.orEmpty().filter { it.locale.language == "es" && !it.features.orEmpty().contains("notInstalled") }
     }.getOrDefault(emptyList())
 
-    /** La elegida; si no, la mejor instalada en el móvil (España primero, mayor calidad); si no, ninguna. */
-    private fun selected(): Voice? {
+    /**
+     * Voces ofrecidas: solo las del país del dispositivo (si no hay, las de España y, si no, todas las españolas);
+     * y, si hay instaladas en el móvil, solo esas (las de red solo si no queda otra). De mejor a peor calidad.
+     */
+    private fun candidates(): List<Voice> {
         val all = spanish()
-        voiceId?.let { id -> all.firstOrNull { it.name == id }?.let { return it } }
-        return all.filter { !it.isNetworkConnectionRequired }
-            .sortedWith(compareByDescending<Voice> { it.locale.country == "ES" }.thenByDescending { it.quality })
-            .firstOrNull()
+        val country = Locale.getDefault().country
+        val byCountry = all.filter { it.locale.country == country }
+            .ifEmpty { all.filter { it.locale.country == "ES" } }
+            .ifEmpty { all }
+        val local = byCountry.filter { !it.isNetworkConnectionRequired }
+        return local.ifEmpty { byCountry }.sortedWith(compareByDescending<Voice> { it.quality }.thenBy { it.name })
     }
 
-    private fun Voice.toSpeechVoice(): SpeechVoice {
-        val variant = name.substringAfter("-x-", "").substringBefore("-")
-        val place = locale.getDisplayName(Locale("es")).replaceFirstChar { it.uppercase() }
-        return SpeechVoice(name, if (variant.isNotEmpty()) "$place · $variant" else place, isNetworkConnectionRequired)
+    /** La elegida (si sigue entre las ofrecidas); si no, la mejor de la lista. */
+    private fun selected(): Voice? {
+        val list = candidates()
+        return voiceId?.let { id -> list.firstOrNull { it.name == id } } ?: list.firstOrNull()
     }
+
+    private fun Voice.toSpeechVoice(index: Int): SpeechVoice = SpeechVoice(name, "Voz ${index + 1}", isNetworkConnectionRequired)
 
     /** Aplica la voz elegida y devuelve la que quedará activa (puede ser de red si no hay otra). */
     private fun apply(): Voice? {
@@ -66,13 +73,14 @@ class AndroidSpeechEngine(context: Context) : SpeechEngine {
 
     override suspend fun loadVoices(): List<SpeechVoice> {
         if (!ready.await()) return emptyList()
-        return spanish().sortedWith(compareBy<Voice>({ it.isNetworkConnectionRequired }, { it.locale.country != "ES" }, { it.name }))
-            .map { it.toSpeechVoice() }
+        return candidates().mapIndexed { i, v -> v.toSpeechVoice(i) }
     }
 
     override suspend fun activeVoice(): SpeechVoice? {
         if (!ready.await()) return null
-        return apply()?.toSpeechVoice()
+        val v = apply() ?: return null
+        val i = candidates().indexOfFirst { it.name == v.name }
+        return v.toSpeechVoice(if (i >= 0) i else 0)
     }
 
     override fun setVoice(id: String?) { voiceId = id }

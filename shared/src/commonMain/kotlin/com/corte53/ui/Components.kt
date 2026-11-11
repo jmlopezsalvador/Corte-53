@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,114 +12,83 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.BottomSheetDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import kotlin.math.round
 
-/** Colores de la identidad visual (04-UI-Y-DISENO.md). */
-object Pal {
-    val Felt = Color(0xFF0F3D2E)
-    val Felt2 = Color(0xFF17604A)
-    val Ink = Color(0xFFF3EFE3)
-    val Muted = Color(0xFFB7C8BE)
-    val Gold = Color(0xFFE0B84F)
-    val Red = Color(0xFFC8102E)
-    val Black = Color(0xFF151515)
-    val Paper = Color(0xFFFFFDF7)
-    val Ok = Color(0xFF2E9E5B)
-    val Ko = Color(0xFFC0392B)
-    val Green = Color(0xFF7BE0A2)
-    val Salmon = Color(0xFFFF9A8F)
-    val Orange = Color(0xFFFFC46B)
-    val Teal = Color(0xFF9FD8C0)
-    val Back = Color(0xFF8B1A2B)
-    val Badge = Color(0xFF222222)
-    val Panel = Color(0x3D000000)       // negro translúcido (~.24)
-    val Line = Color(0x4DFFFFFF)        // blanco 30 %
-}
-
-val Serif = FontFamily.Serif
-
-/** Decimal con coma española: [decimals] fijos (1 → «1,5», «5,0»). */
-fun dec(x: Double, decimals: Int = 1): String {
-    var p = 1.0
-    repeat(decimals) { p *= 10 }
-    val scaled = round(x * p).toLong()
-    val sign = if (scaled < 0) "-" else ""
-    val abs = kotlin.math.abs(scaled)
-    val whole = abs / p.toLong()
-    val frac = (abs % p.toLong()).toString().padStart(decimals, '0')
-    return if (decimals == 0) "$sign$whole" else "$sign$whole,$frac"
-}
-
-/** Como [dec] pero sin ceros sobrantes (0,75 · 1 · 0,5). */
-fun decTrim(x: Double, maxDecimals: Int = 2): String = dec(x, maxDecimals).trimEnd('0').trimEnd(',')
-
-/** Fondo de tapete con degradado radial y columna centrada de 520 dp máx. */
+/** Pantalla: fondo vino, zonas seguras y columna de 520 dp máx. [bottomBar] ocupa todo el ancho, fija abajo. */
 @Composable
-fun Screen(scroll: Boolean = true, content: @Composable ColumnScope.() -> Unit) {
-    Box(
-        Modifier.fillMaxSize()
-            .background(Pal.Felt)
-            .drawBehind {
-                drawRect(
-                    Brush.radialGradient(
-                        0f to Pal.Felt2, 0.7f to Pal.Felt,
-                        center = Offset(size.width / 2, size.height * 0.25f),
-                        radius = size.maxDimension,
-                    ),
-                )
-            }
-            .safeDrawingPadding(),
-        contentAlignment = Alignment.TopCenter,
-    ) {
-        val base = Modifier.widthIn(max = 520.dp).fillMaxSize().padding(horizontal = 16.dp, vertical = 16.dp)
+fun Screen(scroll: Boolean = true, bottomBar: @Composable () -> Unit = {}, content: @Composable ColumnScope.() -> Unit) {
+    Column(Modifier.fillMaxSize().appBackground().safeDrawingPadding(), horizontalAlignment = Alignment.CenterHorizontally) {
+        val base = Modifier.weight(1f).widthIn(max = 520.dp).fillMaxWidth().padding(horizontal = 20.dp)
         Column(if (scroll) base.verticalScroll(rememberScrollState()) else base, content = content)
+        bottomBar()
     }
 }
 
+/** Marca: «Corte» y el 53 dentro del círculo de posición, como en las cartas. */
 @Composable
-fun Label(text: String, modifier: Modifier = Modifier) {
-    Text(
-        text.uppercase(), color = Pal.Muted, fontSize = 12.sp, letterSpacing = 0.15.em,
-        modifier = modifier.padding(top = 24.dp, bottom = 8.dp),
-    )
+fun Wordmark(size: Float = 30f) {
+    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy((size * 0.28f).dp)) {
+        Text("Corte", color = Pal.Cream, fontFamily = Serif, fontSize = size.sp)
+        Box(Modifier.size((size * 1.25f).dp).background(Pal.RedHi, CircleShape), contentAlignment = Alignment.Center) {
+            Text("53", color = Pal.Cream, fontFamily = Serif, fontWeight = FontWeight.Bold, fontSize = (size * 0.66f).sp)
+        }
+    }
+}
+
+/** Título de sección: serif, frase normal. */
+@Composable
+fun SectionTitle(text: String, modifier: Modifier = Modifier) {
+    Text(text, color = Pal.Cream, fontFamily = Serif, fontSize = 20.sp, modifier = modifier.padding(top = 28.dp, bottom = 10.dp))
 }
 
 @Composable
 fun Hint(text: String, modifier: Modifier = Modifier, center: Boolean = false) {
     Text(
-        text, color = Pal.Muted, fontSize = 13.6.sp, lineHeight = 19.sp,
+        text, color = Pal.CreamDim, fontSize = 14.sp, lineHeight = 20.sp,
         textAlign = if (center) TextAlign.Center else null,
         modifier = modifier.padding(top = 8.dp).then(if (center) Modifier.fillMaxWidth() else Modifier),
     )
+}
+
+@Composable
+fun Warning(text: String, modifier: Modifier = Modifier) {
+    Text(text, color = Pal.Amber, fontSize = 14.sp, lineHeight = 20.sp, modifier = modifier.padding(top = 8.dp))
 }
 
 @Composable
@@ -127,7 +97,7 @@ fun <T> Segmented(
     modifier: Modifier = Modifier, perRow: Int = options.size,
 ) {
     Column(
-        modifier.fillMaxWidth().background(Color(0x40000000), RoundedCornerShape(12.dp)).padding(4.dp),
+        modifier.fillMaxWidth().background(Pal.Surface, RoundedCornerShape(14.dp)).border(1.dp, Pal.Line, RoundedCornerShape(14.dp)).padding(4.dp),
         verticalArrangement = Arrangement.spacedBy(4.dp),
     ) {
         options.chunked(perRow).forEach { row ->
@@ -135,15 +105,14 @@ fun <T> Segmented(
                 row.forEach { (value, text) ->
                     val sel = value == selected
                     Box(
-                        Modifier.weight(1f)
-                            .background(if (sel) Pal.Paper else Color.Transparent, RoundedCornerShape(9.dp))
-                            .clickable { onSelect(value) }
-                            .padding(vertical = 12.dp, horizontal = 4.dp),
+                        Modifier.weight(1f).height(44.dp)
+                            .background(if (sel) Pal.Cream else Color.Transparent, RoundedCornerShape(10.dp))
+                            .clickable { onSelect(value) },
                         contentAlignment = Alignment.Center,
                     ) {
                         Text(
-                            text, color = if (sel) Pal.Felt else Pal.Ink, fontSize = 14.7.sp,
-                            fontWeight = FontWeight.SemiBold, textAlign = TextAlign.Center,
+                            text, color = if (sel) Pal.Red else Pal.Cream, fontSize = 15.sp,
+                            fontWeight = if (sel) FontWeight.Bold else FontWeight.Medium, textAlign = TextAlign.Center,
                         )
                     }
                 }
@@ -153,22 +122,16 @@ fun <T> Segmented(
 }
 
 @Composable
-fun Chip(text: String, selected: Boolean, red: Boolean = false, onClick: () -> Unit) {
+fun Chip(text: String, selected: Boolean, modifier: Modifier = Modifier, pad: Dp = 16.dp, onClick: () -> Unit) {
     val shape = RoundedCornerShape(50)
     Box(
-        Modifier
-            .background(if (selected) Pal.Gold else Color.Transparent, shape)
-            .border(1.dp, if (selected) Pal.Gold else Color(0x40FFFFFF), shape)
-            .clickable(onClick = onClick)
-            .padding(horizontal = 12.dp, vertical = 7.dp)
-            .widthIn(min = 20.dp),
+        modifier.height(40.dp)
+            .background(if (selected) Pal.Cream else Color.Transparent, shape)
+            .border(1.dp, if (selected) Pal.Cream else Pal.Line, shape)
+            .clickable(onClick = onClick).padding(horizontal = pad),
         contentAlignment = Alignment.Center,
     ) {
-        Text(
-            text, fontSize = 13.6.sp,
-            color = if (selected) Pal.Felt else if (red) Pal.Salmon else Pal.Ink,
-            fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
-        )
+        Text(text, fontSize = 14.sp, maxLines = 1, softWrap = false, color = if (selected) Pal.Red else Pal.Cream, fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium)
     }
 }
 
@@ -176,66 +139,144 @@ fun Chip(text: String, selected: Boolean, red: Boolean = false, onClick: () -> U
 @Composable
 fun Chips(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
     FlowRow(
-        modifier.fillMaxWidth().padding(top = 10.dp),
+        modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp),
     ) { content() }
 }
 
+/** Fila de chips con scroll horizontal. */
 @Composable
-fun PrimaryButton(text: String, modifier: Modifier = Modifier, enabled: Boolean = true, onClick: () -> Unit) {
-    Box(
-        modifier.fillMaxWidth().alpha(if (enabled) 1f else 0.6f)
-            .background(Pal.Gold, RoundedCornerShape(14.dp))
-            .clickable(onClick = onClick).padding(16.dp),
-        contentAlignment = Alignment.Center,
-    ) { Text(text, color = Pal.Felt, fontSize = 16.8.sp, fontWeight = FontWeight.Bold) }
+fun ChipRow(modifier: Modifier = Modifier, content: @Composable RowScope.() -> Unit) {
+    Row(
+        modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+        horizontalArrangement = Arrangement.spacedBy(8.dp), content = content,
+    )
 }
 
 @Composable
-fun GhostButton(
-    text: String, modifier: Modifier = Modifier, enabled: Boolean = true, fontSize: Float = 16.8f,
-    onClick: () -> Unit,
+fun PrimaryButton(
+    text: String, modifier: Modifier = Modifier, icon: Ic? = null, enabled: Boolean = true, onClick: () -> Unit,
 ) {
-    Box(
-        modifier.alpha(if (enabled) 1f else 0.35f)
-            .border(BorderStroke(1.dp, Pal.Line), RoundedCornerShape(14.dp))
-            .clickable(enabled = enabled, onClick = onClick).padding(16.dp),
-        contentAlignment = Alignment.Center,
-    ) { Text(text, color = Pal.Ink, fontSize = fontSize.sp, fontWeight = FontWeight.Bold) }
-}
-
-/** Barra superior de tres zonas: volver/salir · título/progreso · contador. */
-@Composable
-fun TopBar(left: String, onLeft: () -> Unit, center: @Composable () -> Unit, right: @Composable () -> Unit) {
-    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-        Box(Modifier.weight(1f)) {
-            Text(left, color = Pal.Muted, fontSize = 15.sp, modifier = Modifier.clickable(onClick = onLeft).padding(vertical = 6.dp))
-        }
-        center()
-        Box(Modifier.weight(1f), contentAlignment = Alignment.CenterEnd) { right() }
+    Row(
+        modifier.fillMaxWidth().height(56.dp).alpha(if (enabled) 1f else 0.45f)
+            .background(Pal.Cream, RoundedCornerShape(16.dp))
+            .clickable(enabled = enabled, onClick = onClick),
+        verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center,
+    ) {
+        if (icon != null) { Icon(icon, Pal.Red, 22.dp); Box(Modifier.size(10.dp)) }
+        Text(text, color = Pal.Red, fontSize = 17.sp, fontWeight = FontWeight.Bold)
     }
 }
 
 @Composable
-fun BarTitle(text: String) = Text(text, color = Pal.Ink, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+fun SecondaryButton(
+    text: String, modifier: Modifier = Modifier, icon: Ic? = null, enabled: Boolean = true, onClick: () -> Unit,
+) {
+    Row(
+        modifier.fillMaxWidth().height(56.dp).alpha(if (enabled) 1f else 0.4f)
+            .border(BorderStroke(1.dp, Pal.Line), RoundedCornerShape(16.dp))
+            .clickable(enabled = enabled, onClick = onClick),
+        verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center,
+    ) {
+        if (icon != null) { Icon(icon, Pal.Cream, 22.dp); Box(Modifier.size(10.dp)) }
+        Text(text, color = Pal.Cream, fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
+    }
+}
+
+/** Botón cuadrado con icono (56 dp), para acciones secundarias junto al principal. */
+@Composable
+fun IconSquare(ic: Ic, description: String, modifier: Modifier = Modifier, enabled: Boolean = true, onClick: () -> Unit) {
+    Box(
+        modifier.size(56.dp).alpha(if (enabled) 1f else 0.4f)
+            .border(BorderStroke(1.dp, Pal.Line), RoundedCornerShape(16.dp))
+            .clickable(enabled = enabled, onClick = onClick).semantics { contentDescription = description },
+        contentAlignment = Alignment.Center,
+    ) { Icon(ic, Pal.Cream, 24.dp) }
+}
+
+/** Botón de icono de 44 dp para barras superiores. */
+@Composable
+fun IconBtn(ic: Ic, description: String, onClick: () -> Unit) {
+    Box(
+        Modifier.size(44.dp).clickable(onClick = onClick).semantics { contentDescription = description },
+        contentAlignment = Alignment.Center,
+    ) { Icon(ic, Pal.Cream, 24.dp) }
+}
+
+/** Barra superior: atrás · título · acciones. */
+@Composable
+fun TopBar(title: String, onBack: () -> Unit, trailing: @Composable RowScope.() -> Unit = {}) {
+    Row(Modifier.fillMaxWidth().height(60.dp), verticalAlignment = Alignment.CenterVertically) {
+        IconBtn(Ic.Back, "Volver", onBack)
+        Text(title, color = Pal.Cream, fontFamily = Serif, fontSize = 22.sp, modifier = Modifier.weight(1f).padding(start = 4.dp))
+        trailing()
+    }
+}
+
+enum class Tab(val label: String, val icon: Ic) {
+    Learn("Memorizar", Ic.Learn), Practice("Practicar", Ic.Practice), Library("Baraja", Ic.Library), Settings("Ajustes", Ic.Gear),
+}
+
+@Composable
+fun BottomBar(selected: Tab, onSelect: (Tab) -> Unit) {
+    Row(
+        Modifier.fillMaxWidth().background(Pal.Surface).drawBehind { drawLine(Pal.Line, Offset(0f, 0f), Offset(size.width, 0f), 1.dp.toPx()) }.padding(vertical = 8.dp),
+        horizontalArrangement = Arrangement.SpaceEvenly,
+    ) {
+        Tab.entries.forEach { t ->
+            val sel = t == selected
+            Column(
+                Modifier.weight(1f).clickable { onSelect(t) }.padding(vertical = 2.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Box(
+                    Modifier.size(width = 56.dp, height = 30.dp).background(if (sel) Pal.Red else Color.Transparent, RoundedCornerShape(15.dp)),
+                    contentAlignment = Alignment.Center,
+                ) { Icon(t.icon, if (sel) Pal.Cream else Pal.CreamDim, 22.dp) }
+                Text(
+                    t.label, fontSize = 12.sp, color = if (sel) Pal.Cream else Pal.CreamDim,
+                    fontWeight = if (sel) FontWeight.Bold else FontWeight.Medium, modifier = Modifier.padding(top = 3.dp),
+                )
+            }
+        }
+    }
+}
+
+/** Hoja inferior para ajustes de una pantalla. */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun Sheet(title: String, onDismiss: () -> Unit, content: @Composable ColumnScope.() -> Unit) {
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+        containerColor = Pal.Surface, contentColor = Pal.Cream,
+        dragHandle = { BottomSheetDefaults.DragHandle(color = Pal.Line) },
+    ) {
+        Column(
+            Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).navigationBarsPadding()
+                .padding(horizontal = 20.dp).padding(bottom = 24.dp),
+        ) {
+            Text(title, color = Pal.Cream, fontFamily = Serif, fontSize = 24.sp, modifier = Modifier.padding(bottom = 4.dp))
+            content()
+        }
+    }
+}
 
 @Composable
 fun LabeledSlider(
     label: String, value: Double, valueText: String, min: Double, max: Double, step: Double,
     onChange: (Double) -> Unit,
 ) {
-    Text(
-        buildAnnotatedString { append(label.uppercase()); append(" · "); append(valueText) },
-        color = Pal.Muted, fontSize = 12.sp, letterSpacing = 0.15.em, modifier = Modifier.padding(top = 24.dp, bottom = 8.dp),
-    )
+    Row(Modifier.fillMaxWidth().padding(top = 18.dp), verticalAlignment = Alignment.CenterVertically) {
+        Text(label, color = Pal.Cream, fontSize = 15.sp, modifier = Modifier.weight(1f))
+        Text(valueText, color = Pal.Cream, fontFamily = Serif, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+    }
     val steps = (((max - min) / step).toInt() - 1).coerceAtLeast(0)
     Slider(
-        value = value.toFloat(), onValueChange = { v ->
-            onChange(round(v / step) * step)
-        },
+        value = value.toFloat(), onValueChange = { v -> onChange(round(v / step) * step) },
         valueRange = min.toFloat()..max.toFloat(), steps = steps,
         colors = SliderDefaults.colors(
-            thumbColor = Pal.Gold, activeTrackColor = Pal.Gold, inactiveTrackColor = Color(0x33FFFFFF),
+            thumbColor = Pal.Cream, activeTrackColor = Pal.RedHi, inactiveTrackColor = Pal.Line,
             activeTickColor = Color.Transparent, inactiveTickColor = Color.Transparent,
         ),
     )
@@ -244,25 +285,16 @@ fun LabeledSlider(
 @Composable
 fun Toggle(text: String, checked: Boolean, onChange: (Boolean) -> Unit) {
     Row(
-        Modifier.fillMaxWidth().padding(top = 8.dp).clickable { onChange(!checked) },
+        Modifier.fillMaxWidth().padding(top = 8.dp).height(52.dp).clickable { onChange(!checked) },
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Checkbox(
+        Text(text, color = Pal.Cream, fontSize = 16.sp, modifier = Modifier.weight(1f))
+        Switch(
             checked, onCheckedChange = onChange,
-            colors = CheckboxDefaults.colors(
-                checkedColor = Pal.Gold, checkmarkColor = Pal.Felt, uncheckedColor = Pal.Muted,
+            colors = SwitchDefaults.colors(
+                checkedThumbColor = Pal.Cream, checkedTrackColor = Pal.RedHi, checkedBorderColor = Pal.RedHi,
+                uncheckedThumbColor = Pal.CreamDim, uncheckedTrackColor = Pal.Surface, uncheckedBorderColor = Pal.Line,
             ),
         )
-        Text(text, color = Pal.Ink, fontSize = 15.2.sp, modifier = Modifier.padding(start = 4.dp))
     }
-}
-
-/** Círculo/aviso de texto de apoyo bajo una zona; ocupa su sitio aunque esté vacío. */
-@Composable
-fun Tip(text: String, modifier: Modifier = Modifier) {
-    Text(
-        text, color = Pal.Muted, fontSize = 16.sp, textAlign = TextAlign.Center,
-        modifier = modifier.fillMaxWidth().padding(bottom = 14.dp),
-        style = TextStyle(lineHeight = 22.sp),
-    )
 }
