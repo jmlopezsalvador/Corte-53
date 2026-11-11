@@ -19,6 +19,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import kotlinx.coroutines.delay
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -52,15 +54,25 @@ private fun Int.clock(): String = "${this / 60}:${(this % 60).toString().padStar
 fun TrainScreen(session: TrainSession, onQuit: () -> Unit, onFinish: () -> Unit) {
     var i by remember { mutableStateOf(0) }
     val total = session.list.size
-    val pos = session.list[i]
-    val dir = session.dirs[i]
     val mark = session.res[i]
     val ok = session.res.count { it == true }
     val ko = session.res.count { it == false }
 
-    // estado visual de la carta actual: se reinicia (sin animar) al cambiar de carta
-    var flipped by remember(i) { mutableStateOf(false) }
+    // Carta que se está dibujando: va un poco por detrás de `i` para no cambiarla hasta que esté oculta
+    var shown by remember { mutableStateOf(0) }
+    val pos = session.list[shown]
+    val dir = session.dirs[shown]
+    var flipped by remember { mutableStateOf(false) }
     var revealed by remember(i) { mutableStateOf(false) }
+
+    LaunchedEffect(i) {
+        if (flipped && dir == Direction.NUMBER_TO_CARD) {
+            flipped = false
+            delay(470) // dura la animación del giro (450 ms)
+        }
+        flipped = false
+        shown = i
+    }
 
     fun go(step: Int) {
         val n = i + step
@@ -68,6 +80,7 @@ fun TrainScreen(session: TrainSession, onQuit: () -> Unit, onFinish: () -> Unit)
         if (n >= total) onFinish() else i = n
     }
     fun toggle() {
+        if (shown != i) return
         flipped = !flipped
         if (flipped) revealed = true
     }
