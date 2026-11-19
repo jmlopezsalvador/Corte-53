@@ -98,7 +98,7 @@ fun ColumnScope.LearnTab(s: MenuSettings, onChange: (MenuSettings) -> Unit, onSt
     SecondaryButton("Ajustar orden, rango y cartas", Modifier.padding(top = 14.dp), icon = Ic.Tune) { sheet = true }
 
     Column(Modifier.padding(top = 28.dp, bottom = 24.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        PrimaryButton("Empezar con tarjetas", icon = Ic.Play, enabled = count > 0, onClick = onStart)
+        PrimaryButton("Empezar", icon = Ic.Play, enabled = count > 0, onClick = onStart)
         SecondaryButton("Escuchar", icon = Ic.Speaker, enabled = count > 0, onClick = onListen)
     }
 

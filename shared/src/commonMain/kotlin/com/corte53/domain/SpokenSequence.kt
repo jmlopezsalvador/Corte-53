@@ -55,9 +55,14 @@ object SpokenSequence {
         return s
     }
 
-    /** Propuesta, pausa para pensar, revelación y explicación. */
-    fun cutFull(cut: Cut, think: Double, step: Double): List<Step> =
-        cutProposal(cut) + Step.Pause(think) + Step.Visual("reveal") + cutExplanation(cut, step)
+    /** Solo la carta por la que cortar y si se corta arriba o abajo (sin explicación). */
+    fun cutResult(cut: Cut): List<Step> =
+        tight(c(cut.refCard), Step.Clip(if (cut.up) "kUp" else "kDown"))
+
+    /** Propuesta, pausa para pensar, revelación y explicación (o solo el resultado si [explain] es false). */
+    fun cutFull(cut: Cut, think: Double, step: Double, explain: Boolean = true): List<Step> =
+        cutProposal(cut) + Step.Pause(think) + Step.Visual("reveal") +
+            if (explain) cutExplanation(cut, step) else cutResult(cut)
 
     // ---- Restas con voz ----
     fun subtractionQuestion(s: Subtraction): List<Step> =

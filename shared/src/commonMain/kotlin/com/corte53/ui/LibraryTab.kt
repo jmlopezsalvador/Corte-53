@@ -58,11 +58,11 @@ fun AnnotatedString.Builder.hint(text: String) =
 fun AnnotatedString.Builder.strong(text: String) =
     withStyle(SpanStyle(color = Pal.Cream, fontWeight = FontWeight.Bold)) { append(text) }
 
-/** Pestaña Baraja: las 52 cartas en orden y el glosario de fórmulas. */
+/** Pestaña Glosario: las 52 cartas en orden y el glosario de fórmulas. */
 @Composable
 fun ColumnScope.LibraryTab() {
     var section by remember { mutableStateOf(0) }
-    Text("Baraja", color = Pal.Cream, fontFamily = Serif, fontSize = 32.sp, modifier = Modifier.padding(top = 18.dp, bottom = 14.dp))
+    Text("Glosario", color = Pal.Cream, fontFamily = Serif, fontSize = 32.sp, modifier = Modifier.padding(top = 18.dp, bottom = 14.dp))
     Segmented(listOf(0 to "Las 52 cartas", 1 to "Fórmulas"), section, { section = it })
     if (section == 0) Deck(Modifier.weight(1f)) else Glossary(Modifier.weight(1f))
 }

@@ -65,7 +65,7 @@ fun CutsScreen(
             while (true) {
                 val s = k
                 val now = CutCalculator.cutFor(scenario.first, scenario.second)
-                runner.run(SpokenSequence.cutFull(now, s.think, s.step), s.rate) { if (it == "reveal") shown = true }
+                runner.run(SpokenSequence.cutFull(now, s.think, s.step, s.explain), s.rate) { if (it == "reveal") shown = true }
                 delay((k.next * 1000).toLong())
                 newScenario()
             }
@@ -94,7 +94,7 @@ fun CutsScreen(
         },
         controls = {
             PrimaryButton(
-                if (cuts.voice) (if (voice.on) "Pausa" else "Cantar") else (if (shown) "Siguiente" else "Revelar"),
+                if (cuts.voice) (if (voice.on) "Pausa" else "Empezar") else (if (shown) "Siguiente" else "Revelar"),
                 Modifier.weight(1f), icon = if (cuts.voice) (if (voice.on) Ic.Pause else Ic.Play) else null, onClick = ::act,
             )
             if (cuts.voice) IconSquare(Ic.Next, "Otro corte", onClick = ::skip)
@@ -115,6 +115,7 @@ fun CutsScreen(
                     listOf(false to "Manual", true to "Con voz"), cuts.voice,
                     { voice.stop(); onCuts(cuts.copy(voice = it)) }, Modifier.padding(top = 4.dp),
                 )
+                if (cuts.voice) Toggle("Explicar el corte", cuts.explain) { onCuts(cuts.copy(explain = it)) }
                 BoxWithConstraints(Modifier.fillMaxWidth().padding(top = 28.dp), contentAlignment = Alignment.Center) {
                     val w = minOf(maxWidth * 0.36f, 150.dp)
                     Row(

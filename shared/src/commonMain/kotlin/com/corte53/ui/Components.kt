@@ -214,7 +214,7 @@ fun TopBar(title: String, onBack: () -> Unit, trailing: @Composable RowScope.() 
 }
 
 enum class Tab(val label: String, val icon: Ic) {
-    Learn("Memorizar", Ic.Learn), Practice("Practicar", Ic.Practice), Library("Baraja", Ic.Library), Settings("Ajustes", Ic.Gear),
+    Learn("Memorizar", Ic.Learn), Practice("Practicar", Ic.Practice), Library("Glosario", Ic.Library), Settings("Ajustes", Ic.Gear),
 }
 
 @Composable

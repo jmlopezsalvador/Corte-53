@@ -39,6 +39,8 @@ data class AudioSettings(
 
 data class CutSettings(
     val voice: Boolean = false,
+    /** Con voz: true = dice toda la explicación; false = solo la carta y arriba/abajo. */
+    val explain: Boolean = true,
     val think: Double = 5.0,
     val step: Double = 0.75,
     val next: Double = 2.0,
@@ -92,6 +94,7 @@ class SettingsStore(private val prefs: KeyValueStore) {
             ),
             cuts = CutSettings(
                 voice = prefs.getBoolean("cuts.voice", c.voice),
+                explain = prefs.getBoolean("cuts.explain", c.explain),
                 think = dbl("cuts.think", c.think), step = dbl("cuts.step", c.step),
                 next = dbl("cuts.next", c.next), rate = dbl("cuts.rate", c.rate),
             ),
@@ -116,7 +119,7 @@ class SettingsStore(private val prefs: KeyValueStore) {
             putDbl("audio.rate", rate); prefs.putBoolean("audio.loop", loop); prefs.putBoolean("audio.show", show)
         }
         with(x.cuts) {
-            prefs.putBoolean("cuts.voice", voice); putDbl("cuts.think", think); putDbl("cuts.step", step)
+            prefs.putBoolean("cuts.voice", voice); prefs.putBoolean("cuts.explain", explain); putDbl("cuts.think", think); putDbl("cuts.step", step)
             putDbl("cuts.next", next); putDbl("cuts.rate", rate)
         }
         with(x.subs) {
